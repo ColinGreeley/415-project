@@ -1,5 +1,4 @@
 CREATE TABLE Users (
-
     average_stars FLOAT,
     cool   INTEGER,
     fans INTEGER,

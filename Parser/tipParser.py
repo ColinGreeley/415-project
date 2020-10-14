@@ -100,11 +100,9 @@ def parseTips():
 
     return count
 
-
-
-startTime=time.time()
-totalLines=parseTips()
-divideTips(10)
-endTime=time.time()
-
-print("Tips Total Time:"+str(endTime-startTime))
+def runTipParser():
+    startTime=time.time()
+    totalLines=parseTips()
+    divideTips(int(totalLines/300000))
+    endTime=time.time()
+    print("Tips Total Time:"+str(endTime-startTime))

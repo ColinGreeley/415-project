@@ -24,7 +24,7 @@ def getFileLineCount(fileName):
     infile.close()
     return lineCount
 
-def divideCheckin(fileAmount):
+def divideCheckin(fileAmount,totalLines):
     fileName = '../ParsedData/Checkin/checkin'
 
  
@@ -115,13 +115,13 @@ def parseCheckinData():
         
     outfile.close()
     f.close()
-    print("checkin Total Lines:" +sum(totalLines))
+    print("checkin Total Lines:" +str(totalLines))
     return totalLines
 
-start=time.time()
-totalLines=parseCheckinData()
-divideCheckin(40)
-end=time.time()
-
-elapsed=end-start
-print("elapsedtime: "+str(elapsed))
+def runCheckinParser():
+    start=time.time()
+    totalLines=parseCheckinData()
+    divideCheckin(int(totalLines/300000),totalLines)
+    end=time.time()
+    elapsed=end-start
+    print("elapsedtime: "+str(elapsed))
