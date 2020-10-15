@@ -13,12 +13,14 @@ def cleanStr4SQL(s):
         s=s.replace("\\"," ")
     return s
 
-def divideTips(fileAmount):
-    fileName = '../ParsedData/Tip/tips'
+def divideFile(fileAmount,fileName,insertText,totalLines): 
 
- 
-    infile = open(fileName+".sql", 'r', encoding="latin-1")
+    infile = open(fileName+".sql", 'r',encoding="latin-1")
     lineCount=totalLines
+    if fileAmount==0:
+        linesPerFile = int(lineCount/1)
+    else:
+        linesPerFile = int(lineCount/fileAmount)
 
     linesPerFile = int(lineCount/fileAmount)
 
@@ -26,21 +28,24 @@ def divideTips(fileAmount):
     infile.readline()
 
     for currentFile in range(0, fileAmount-1):
-        outfile = open(fileName+str(currentFile)+'.sql', 'w', encoding="latin-1")
+        outfile = open(fileName+str(currentFile)+'.sql', 'w',encoding="latin-1")
+        outfile.write(
+            insertText)
         for LineNum in range(linesPerFile*currentFile, linesPerFile*(currentFile+1)-1):
             line = infile.readline()
             outfile.write(line)
         outfile.close()
 
     # final file incase there wasnt an even division
-    outfile = open(fileName+str(fileAmount-1)+'.sql', 'w', encoding="latin-1")
+    outfile = open(fileName+str(fileAmount-1)+'.sql', 'w',encoding="latin-1")
+    outfile.write(insertText)
     line = infile.readline()
     while(line):
         outfile.write(line)
         line = infile.readline()
     outfile.close()
     infile.close()
-
+   
 
 def sqlformatter(filename, outname):
     outfile = open(outname, 'w', encoding="latin-1")
@@ -98,6 +103,10 @@ def parseTips():
 def runTipParser():
     startTime=time.time()
     totalLines=parseTips()
-    divideTips(int(totalLines/300000))
+    divideFile(int(totalLines/300000),'../ParsedData/Tip/tips',"",totalLines)
     endTime=time.time()
     print("Tips Total Time:"+str(endTime-startTime))
+
+
+
+runTipParser()
