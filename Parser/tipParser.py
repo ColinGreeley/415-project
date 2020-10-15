@@ -108,3 +108,4 @@ def runTipParser():
     print("Tips Total Time:"+str(endTime-startTime))
 
 
+runTipParser()

@@ -112,3 +112,4 @@ def runReviewParser():
     divideFile(int(totalLines/300000),"../ParsedData/Review/review","INSERT INTO Review (review_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ",totalLines)
     endTime=time.time()
     print("Review Total Time:"+str(endTime-startTime))
+

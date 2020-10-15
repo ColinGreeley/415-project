@@ -1,9 +1,9 @@
 CREATE TABLE Tip(
 	
-	tiptext VARCHAR,
+	tip_text VARCHAR,
 	likes INTEGER,
-	userid VARCHAR NOT NULL,
-	businessid VARCHAR NOT NULL,
+	user_id VARCHAR NOT NULL,
+	business_id VARCHAR NOT NULL,
 	day Integer NOT NULL,
 	month Integer NOT NULL,
 	year Integer NOT NULL,
