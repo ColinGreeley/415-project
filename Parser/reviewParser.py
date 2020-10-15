@@ -73,7 +73,6 @@ def divideFile(fileAmount,fileName,insertText,totalLines):
     outfile.close()
     infile.close()
    
-
 def parseReview():
     infile=open("../Data/yelp_academic_dataset_review.json","r", encoding="latin-1")
     outfile = open('../ParsedData/Review/review.sql', 'w',encoding="latin-1")
@@ -81,7 +80,7 @@ def parseReview():
     count=0
     line=infile.readline()
     while(line):
-        outfile.write("INSERT INTO Review (reviewer_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ")
+        outfile.write("INSERT INTO Review (review_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ")
 
         count+=1       
         data = json.loads(line)
@@ -110,8 +109,6 @@ def parseReview():
 def runReviewParser():
     startTime=time.time()
     totalLines=parseReview()
-    divideFile(int(totalLines/300000),"../ParsedData/Review/review","INSERT INTO Review (reviewer_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ",totalLines)
+    divideFile(int(totalLines/300000),"../ParsedData/Review/review","INSERT INTO Review (review_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ",totalLines)
     endTime=time.time()
     print("Review Total Time:"+str(endTime-startTime))
-
-runReviewParser()
