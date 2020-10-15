@@ -44,6 +44,10 @@ def divideFile(fileAmount,fileName,insertText,totalLines):
 
     infile = open(fileName+".sql", 'r',encoding="latin-1")
     lineCount=totalLines
+    if fileAmount==0:
+        linesPerFile = int(lineCount/1)
+    else:
+        linesPerFile = int(lineCount/fileAmount)
 
     linesPerFile = int(lineCount/fileAmount)
 
@@ -68,18 +72,17 @@ def divideFile(fileAmount,fileName,insertText,totalLines):
         line = infile.readline()
     outfile.close()
     infile.close()
-    for currentFile in range(0, fileAmount):
-        sqlformatterV2(fileName+str(currentFile)+'.sql',
-                       fileName+'Pt'+str(currentFile)+'.sql')
+   
 
 def parseReview():
     infile=open("../Data/yelp_academic_dataset_review.json","r", encoding="latin-1")
     outfile = open('../ParsedData/Review/review.sql', 'w',encoding="latin-1")
-    outfile.write("INSERT INTO Review (reviewer_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ")
        
     count=0
     line=infile.readline()
     while(line):
+        outfile.write("INSERT INTO Review (reviewer_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ")
+
         count+=1       
         data = json.loads(line)
         outfile.write("(")
@@ -98,8 +101,8 @@ def parseReview():
         (year, month, day) = date.split('-')
 
         hour, minutes, seconds = time.split(':')
-        outfile.write(day+","+month+","+year+","+hour+","+minutes+","+seconds+",")
-        outfile.write('),\n')
+        outfile.write(day+","+month+","+year+","+hour+","+minutes+","+seconds)
+        outfile.write(');\n')
         line=infile.readline()
 
     return count
@@ -110,6 +113,5 @@ def runReviewParser():
     divideFile(int(totalLines/300000),"../ParsedData/Review/review","INSERT INTO Review (reviewer_id,user_id,business_id,stars,useful,funny,cool,text,day,month,year,hour,minute,second) VALUES ",totalLines)
     endTime=time.time()
     print("Review Total Time:"+str(endTime-startTime))
-
 
 runReviewParser()

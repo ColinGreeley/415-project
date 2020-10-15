@@ -58,10 +58,6 @@ def parseBusinessData():
         outfileHours = open('../ParsedData/Hour/hours.sql', 'w',encoding="latin-1")
 
        
-        outfile.write("INSERT INTO Business (business_id,name,city,state,zipcode,latitude,longitude,address,numTips,is_open,stars,numCheckins ) VALUES ")
-        outfileCat.write("INSERT INTO Categories (business_id,category) VALUES")
-        outfileAtt.write("INSERT INTO Attributes(business_id,attribute_key,attribute) VALUES")
-        outfileHours.write("INSERT INTO Hours(business_id,day,open_time,close_time) VALUES")
 
         line = f.readline()
         businessCount=0
@@ -70,6 +66,8 @@ def parseBusinessData():
         hourCount=0
 
         while line:
+            outfile.write("INSERT INTO Business (business_id,name,city,state,zipcode,latitude,longitude,address,numTips,is_open,stars,numCheckins ) VALUES ")
+
             data = json.loads(line)
 
             outfile.write("(")
@@ -78,7 +76,7 @@ def parseBusinessData():
             outfile.write('\''+cleanStr4SQL(data["name"])+'\',')
             outfile.write('\''+cleanStr4SQL(data["city"])+'\',')
             outfile.write('\''+cleanStr4SQL(data["state"])+'\',')
-            outfile.write(str(data["postal_code"])+',')
+            outfile.write('\''+str(data["postal_code"])+'\',')
             outfile.write(str(data["latitude"])+',')
             outfile.write(str(data["longitude"])+',')
             outfile.write('\''+cleanStr4SQL(data["address"])+'\',')
@@ -87,31 +85,37 @@ def parseBusinessData():
             outfile.write(str(data["stars"])+", 0")
 
             category = data['categories']
-            if(category):          
+            if(category):     
+                     
                 categories=category.split(',')      
                 for c in categories:
                     categoryCount+=1
+                    outfileCat.write("INSERT INTO Categories (business_id,category) VALUES")
                     outfileCat.write('(\''+cleanStr4SQL(data["business_id"])+'\',\''+cleanStr4SQL(c)+'\')')
-                    outfileCat.write(',\n')
+                    outfileCat.write(';\n')
                     
 
             attributes = data['attributes']
             if(attributes):
                 for keys in attributes.keys():
                     attributeCount+=1
+                    outfileAtt.write("INSERT INTO Attributes(business_id,attribute_key,attribute) VALUES")
+
                     if type(attributes[keys]) == dict:
                         recurparse(data["business_id"], attributes[keys], outfileAtt)
                     else:
-                        outfileAtt.write('(\''+data["business_id"]+'\',\''+cleanStr4SQL(keys)+'\',\''+cleanStr4SQL(attributes[keys])+'\'),\n')
+                        outfileAtt.write('(\''+data["business_id"]+'\',\''+cleanStr4SQL(keys)+'\',\''+cleanStr4SQL(attributes[keys])+'\');\n')
 
             hours = data['hours']
             if(hours):
                 for h in hours.keys():
                     hourCount+=1
                     hou = hours[h].split('-')
-                    outfileHours.write('(\''+data["business_id"]+'\',\''+h+'\',\''+hou[0]+'\',\''+hou[1]+'\'),\n')
+                    outfileHours.write("INSERT INTO Hours(business_id,day,open_time,close_time) VALUES")
 
-            outfile.write("),\n")
+                    outfileHours.write('(\''+data["business_id"]+'\',\''+h+'\',\''+hou[0]+'\',\''+hou[1]+'\');\n')
+
+            outfile.write(");\n")
             line = f.readline()
             businessCount += 1
     return (businessCount,categoryCount,attributeCount,hourCount)
@@ -152,9 +156,16 @@ def sqlformatterV2(filename, outname):
 def divideFile(fileAmount,fileName,insertText,totalLines): 
 
     infile = open(fileName+".sql", 'r',encoding="latin-1")
+
+    
     lineCount=totalLines
 
-    linesPerFile = int(lineCount/fileAmount)
+    if fileAmount==0:
+        fileAmount=1
+        linesPerFile = int(lineCount/1)
+    else:
+        linesPerFile = int(lineCount/fileAmount)
+
 
     # skips first line: "Insert Into ...."
     infile.readline()
@@ -177,9 +188,7 @@ def divideFile(fileAmount,fileName,insertText,totalLines):
         line = infile.readline()
     outfile.close()
     infile.close()
-    for currentFile in range(0, fileAmount):
-        sqlformatterV2(fileName+str(currentFile)+'.sql',
-                       fileName+'Pt'+str(currentFile)+'.sql')
+  
 
 def runBusinessParser():
     start=time.time()
@@ -194,9 +203,3 @@ def runBusinessParser():
     divideFile(int(hoursLines/300000),'../ParsedData/Hour/hours', "INSERT INTO Hours(business_id,day,open_time,close_time) VALUES" ,hoursLines)
     end=time.time()
     print("business Parser Time: "+ str(end-start))
-
-
-
-
-
-

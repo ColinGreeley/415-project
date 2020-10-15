@@ -28,8 +28,6 @@ def parseUserData():
             '../ParsedData/Friend/friends.sql', 'w', encoding="latin-1")
 
         # read each JSON abject and extract data
-        outfile.write("INSERT INTO Users (average_stars,cool,fans,funny,name,tipcount,usefull,user_id,yelping_since,total_likes) VALUES ")
-        outfileFriend.write("INSERT INTO Friends (user_id,friend_id) VALUES ")
 
         userCount = 0
         friendCount = 0
@@ -38,6 +36,8 @@ def parseUserData():
         line = f.readline()
         start1=time.time()
         while line:
+            outfile.write("INSERT INTO Users (average_stars,cool,fans,funny,name,tipcount,usefull,user_id,yelping_since,total_likes) VALUES ")
+
             data = json.loads(line)
 
             curretID = data["user_id"]
@@ -46,8 +46,10 @@ def parseUserData():
             if(friends):
                 friendsSplit=friends.split(', ')
                 for fr in friendsSplit:
+                    outfileFriend.write("INSERT INTO Friends (user_id,friend_id) VALUES ")
+
                     friendCount+=1
-                    outfileFriend.write('(\''+curretID+'\',\''+fr+'\'),\n')
+                    outfileFriend.write('(\''+curretID+'\',\''+fr+'\');\n')
 
             outfile.write('(')
             outfile.write(str(data["average_stars"])+',')
@@ -58,7 +60,7 @@ def parseUserData():
             outfile.write('0,')
             outfile.write(str(data["useful"])+',')
             outfile.write('\''+data["user_id"]+'\''+',')
-            outfile.write('\'' + data["yelping_since"]+'\''+',0),\n')
+            outfile.write('\'' + data["yelping_since"]+'\''+',0);\n')
             userCount += 1
             line = f.readline()
 
@@ -126,9 +128,7 @@ def divideFile(fileAmount,fileName,insertText,totalLines):
         line = infile.readline()
     outfile.close()
     infile.close()
-    for currentFile in range(0, fileAmount):
-        sqlformatterV2(fileName+str(currentFile)+'.sql',
-                       fileName+'Pt'+str(currentFile)+'.sql')
+  
 
 def runUserParser():
     start=time.time()

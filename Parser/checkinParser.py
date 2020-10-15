@@ -38,8 +38,7 @@ def divideCheckin(fileAmount,totalLines):
 
     for currentFile in range(0, fileAmount-1):
         outfile = open('../ParsedData/Checkin/checkin'+str(currentFile)+'.sql', 'w')
-        outfile.write(
-            "INSERT INTO Checkin(business_id,year,month,day,hour,minute,second) Values\n")
+        
         for LineNum in range(linesPerFile*currentFile, linesPerFile*(currentFile+1)-1):
             line = infile.readline()
             outfile.write(line)
@@ -55,9 +54,6 @@ def divideCheckin(fileAmount,totalLines):
         line = infile.readline()
     outfile.close()
     infile.close()
-    for currentFile in range(0, fileAmount):
-        sqlformatterV2('../ParsedData/Checkin/checkin'+str(currentFile)+'.sql',
-                       '../ParsedData/Checkin/checkinPt'+str(currentFile)+'.sql')
 
 def sqlformatterV2(filename, outname):
     outfile = open(outname, 'w')
@@ -94,14 +90,14 @@ def parseCheckinData():
         line = f.readline()
         
         data = json.loads(line)
-        outfile.write(
-            "INSERT INTO Checkin(business_id,year,month,day,hour,minute,second) Values\n")
         while line:  # looping through each line in the JSON file
 
             data = json.loads(line)
             business_id = str(cleanStr4SQL(data['business_id']))
             # get the tuple of the whole check-in
             for item in data['date'].split(", "):
+                outfile.write("INSERT INTO Checkin(business_id,year,month,day,hour,minute,second) Values")
+
                 totalLines+=1
 
                 # gets the tuple of the date and time of a check-in
@@ -110,7 +106,7 @@ def parseCheckinData():
                 (year, month, day) = date.split("-")
                 (hour, minute, sec) = time.split(":")
                 outfile.write("(\'"+business_id+"\'," + year + "," + month + "," + day + "," +
-                              hour + ","+minute+","+sec+"),\n")  # create a tuple to the checkin text file
+                              hour + ","+minute+","+sec+");\n")  # create a tuple to the checkin text file
             line = f.readline()  # read next line
         
     outfile.close()
@@ -121,7 +117,8 @@ def parseCheckinData():
 def runCheckinParser():
     start=time.time()
     totalLines=parseCheckinData()
-    divideCheckin(int(totalLines/300000),totalLines)
+    # divideCheckin(int(totalLines/300000),totalLines)
     end=time.time()
     elapsed=end-start
     print("elapsedtime: "+str(elapsed))
+

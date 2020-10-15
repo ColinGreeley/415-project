@@ -4,7 +4,7 @@ CREATE TABLE Business(
     address VARCHAR(300),
     city VARCHAR(50),
     state CHAR(2),
-    zipcode INTEGER,
+    zipcode VARCHAR(30),
     latitude double precision,
     longitude double precision,
     stars double precision,
@@ -23,10 +23,10 @@ CREATE TABLE Categories(
 
 CREATE TABLE  Attributes(
     business_id CHAR(22) NOT NULL,
-    attributes_key VARCHAR(50) NOT NULL,
-    attribute VARCHAR(50),
+    attribute_key VARCHAR(50) NOT NULL,
+    attribute VARCHAR(300),
     FOREIGN KEY (business_id) REFERENCES Business(business_id),
-    PRIMARY KEY (business_id,attributes_key) 
+    PRIMARY KEY (business_id,attribute_key) 
 );
 
 CREATE TABLE Hours(
