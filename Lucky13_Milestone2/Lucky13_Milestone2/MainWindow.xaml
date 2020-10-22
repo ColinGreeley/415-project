@@ -1,0 +1,127 @@
+﻿<Window x:Class="Lucky13_Milestone2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lucky13_Milestone2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="614.03" Width="1204.814" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="568" VerticalAlignment="Top" Width="1181" Margin="10,10,0,0">
+            <TabItem Header="User Information">
+                <Grid Background="#FFE5E5E5">
+                    <GroupBox x:Name="setCurrentUserGroupBox" Header="Set Current User" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" VerticalAlignment="Top" Width="235"/>
+                    <TextBox x:Name="inputUserTextBox" HorizontalAlignment="Left" Height="22" Margin="20,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="145" TextChanged="inputUserTextBox_TextChanged"/>
+                    <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="194" Margin="20,62,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="listBox_SelectionChanged"/>
+                    <GroupBox x:Name="groupBox1" Header="Friends" HorizontalAlignment="Left" Height="259" Margin="7,263,0,0" VerticalAlignment="Top" Width="514">
+                        <DataGrid x:Name="friendsDataGrid" HorizontalAlignment="Left" Height="228" Margin="6,4,0,0" VerticalAlignment="Top" Width="488"/>
+                    </GroupBox>
+                    <GroupBox x:Name="groupBox" Header="User Information" HorizontalAlignment="Left" Height="256" Margin="252,10,0,0" VerticalAlignment="Top" Width="269">
+                        <Label x:Name="label1" Content="Fans:" HorizontalAlignment="Left" Height="30" Margin="131,24,0,0" VerticalAlignment="Top" Width="41"/>
+                    </GroupBox>
+                    <TextBox x:Name="nameTextBox" HorizontalAlignment="Left" Height="22" Margin="313,29,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="186" IsReadOnly="True" TextChanged="nameTextBox_TextChanged"/>
+                    <Label x:Name="label" Content="Stars:" HorizontalAlignment="Left" Margin="272,52,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="starsTextBox" HorizontalAlignment="Left" Height="22" Margin="313,55,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" IsReadOnly="True"/>
+                    <TextBox x:Name="fansTextBox" HorizontalAlignment="Left" Height="22" Margin="429,54,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="70" IsReadOnly="True"/>
+                    <Label x:Name="label2" Content="Name:" HorizontalAlignment="Left" Height="25" Margin="270,26,0,0" VerticalAlignment="Top" Width="72"/>
+                    <TextBox x:Name="yelpSinceTxt" HorizontalAlignment="Left" Height="22" Margin="359,79,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="140" IsReadOnly="True"/>
+                    <Label x:Name="label3" Content="Yelping Since:" HorizontalAlignment="Left" Height="37" Margin="270,76,0,0" VerticalAlignment="Top" Width="188"/>
+                    <Label x:Name="label4" Content="Votes:      Funny:      Cool:       Useful:" HorizontalAlignment="Left" Height="28" Margin="282,95,0,0" VerticalAlignment="Top" Width="212"/>
+                    <TextBox x:Name="votesTxt" HorizontalAlignment="Left" Height="22" Margin="288,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
+                    <TextBox x:Name="funnyTxt" HorizontalAlignment="Left" Height="22" Margin="342,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
+                    <TextBox x:Name="coolTxt" HorizontalAlignment="Left" Height="22" Margin="394,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
+                    <TextBox x:Name="usefulTxt" HorizontalAlignment="Left" Height="22" Margin="446,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
+                    <Label x:Name="label5" Content="Tip Count:" HorizontalAlignment="Left" Height="38" Margin="274,141,0,0" VerticalAlignment="Top" Width="63"/>
+                    <TextBox x:Name="tipCountTxt" HorizontalAlignment="Left" Height="22" Margin="363,146,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="111" IsReadOnly="True"/>
+                    <Label x:Name="label5_Copy" Content="Total Tip Likes:" HorizontalAlignment="Left" Height="38" Margin="273,165,0,0" VerticalAlignment="Top" Width="108"/>
+                    <TextBox x:Name="totalTipLikesTxt" HorizontalAlignment="Left" Height="22" Margin="363,170,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="111" IsReadOnly="True"/>
+                    <Label x:Name="label5_Copy1" Content="Lat:" HorizontalAlignment="Left" Height="38" Margin="284,207,0,0" VerticalAlignment="Top" Width="63"/>
+                    <TextBox x:Name="latTxt" HorizontalAlignment="Left" Height="22" Margin="332,209,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="111" IsReadOnly="True"/>
+                    <Label x:Name="longLabel" Content="Long:" HorizontalAlignment="Left" Height="38" Margin="283,231,0,0" VerticalAlignment="Top" Width="108"/>
+                    <TextBox x:Name="longTxt" HorizontalAlignment="Left" Height="22" Margin="332,236,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="111" IsReadOnly="True"/>
+                    <Label x:Name="label6" Content="Location:" HorizontalAlignment="Left" Height="24" Margin="272,191,0,0" VerticalAlignment="Top" Width="89"/>
+                    <Button x:Name="editLocationButton" Content="Edit" HorizontalAlignment="Left" Height="24" Margin="455,0,0,310" VerticalAlignment="Bottom" Width="54" Click="editLocationButton_Click"/>
+                    <Button x:Name="updateLocationButton" Content="Update" HorizontalAlignment="Left" Height="24" Margin="455,236,0,0" VerticalAlignment="Top" Width="54" Click="updateLocationButton_Click"/>
+                    <GroupBox x:Name="groupBox2" Header="Latest tips of my friends?" HorizontalAlignment="Left" Height="512" Margin="533,10,0,0" VerticalAlignment="Top" Width="632">
+                        <DataGrid x:Name="friendsTipsDataGrid" HorizontalAlignment="Left" Height="475" Margin="12,10,0,0" VerticalAlignment="Top" Width="599"/>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Business Search">
+                <Grid Background="#FFE5E5E5">
+                    <GroupBox x:Name="groupBox3" Header="Select Location" HorizontalAlignment="Left" Height="139" Margin="7,22,0,0" VerticalAlignment="Top" Width="218"/>
+                    <ComboBox x:Name="StateList" HorizontalAlignment="Left" Margin="60,50,0,0" VerticalAlignment="Top" Width="62" FontSize="14" SelectionChanged="StateList_SelectionChanged" RenderTransformOrigin="0.325,0.581"/>
+                    <Label x:Name="State" Content="State" HorizontalAlignment="Left" Margin="12,46,0,0" VerticalAlignment="Top" FontSize="14" RenderTransformOrigin="-0.286,0.144"/>
+                    <ComboBox x:Name="CityList" HorizontalAlignment="Left" Margin="60,80,0,0" VerticalAlignment="Top" Width="150" FontSize="14" SelectionChanged="CityList_SelectionChanged" Height="29"/>
+                    <Label x:Name="City" Content="City" HorizontalAlignment="Left" Margin="15,80,0,0" VerticalAlignment="Top" FontSize="14" RenderTransformOrigin="2.777,2.051"/>
+                    <ComboBox x:Name="ZipList" HorizontalAlignment="Left" Margin="60,116,0,0" VerticalAlignment="Top" Width="89" FontSize="14" SelectionChanged="ZipList_SelectionChanged" Height="25"/>
+                    <Label x:Name="Zip" Content="Zip" HorizontalAlignment="Left" Margin="17,112,0,0" VerticalAlignment="Top" FontSize="14" RenderTransformOrigin="3.092,-4.29"/>
+                    <GroupBox x:Name="groupBox4" Header="Business Category" HorizontalAlignment="Left" Height="356" Margin="7,166,0,0" VerticalAlignment="Top" Width="218"/>
+                    <ListBox x:Name="categorylistBox" HorizontalAlignment="Left" Height="165" Margin="17,188,0,0" VerticalAlignment="Top" Width="193" SelectionChanged="categorylistBox_SelectionChanged"/>
+                    <Button x:Name="addCatButton" Content="Add" HorizontalAlignment="Left" Height="22" Margin="47,358,0,0" VerticalAlignment="Top" Width="61" Click="addCatButton_Click"/>
+                    <Button x:Name="removeCatButton" Content="Remove" HorizontalAlignment="Left" Height="22" Margin="113,358,0,0" VerticalAlignment="Top" Width="61" Click="removeCatButton_Click"/>
+                    <ListBox x:Name="categorySelectedListBox" HorizontalAlignment="Left" Height="100" Margin="17,385,0,0" VerticalAlignment="Top" Width="193" SelectionChanged="categorylistBox_SelectionChanged"/>
+                    <Button x:Name="searchBusinessesButton" Content="Search Businesses" HorizontalAlignment="Left" Height="22" Margin="56,490,0,0" VerticalAlignment="Top" Width="110" Click="searchBusinessesButton_Click"/>
+                    <GroupBox x:Name="groupBox5" Header="SEARCH RESULTS" HorizontalAlignment="Left" Height="331" Margin="252,22,0,0" VerticalAlignment="Top" Width="601"/>
+                    <DataGrid x:Name="businessGrid" HorizontalAlignment="Left" Height="291" Margin="269,46,0,0" VerticalAlignment="Top" Width="568" FontSize="10" SelectionChanged="businessGrid_SelectionChanged"/>
+                    <Label x:Name="numOfBusinesses" Content="# of businesses: 0" HorizontalAlignment="Left" Height="32" Margin="691,3,0,0" VerticalAlignment="Top" Width="146"/>
+                    <GroupBox x:Name="groupBox6" Header="SELECTED BUSINESS" HorizontalAlignment="Left" Height="172" Margin="254,358,0,0" VerticalAlignment="Top" Width="911">
+                        <TextBlock x:Name="BusNameTextBlock" HorizontalAlignment="Left" Height="29" Margin="14,13,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="452"/>
+                    </GroupBox>
+                    <TextBlock x:Name="addresseBusTextBlock" HorizontalAlignment="Left" Height="36" Margin="275,416,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="485"/>
+                    <TextBlock x:Name="hoursBusTextBlock" HorizontalAlignment="Left" Height="41" Margin="275,446,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="451"/>
+                    <Button x:Name="showCheckinsButton" Content="Show Checkins" HorizontalAlignment="Left" Height="32" Margin="752,395,0,0" VerticalAlignment="Top" Width="118" Click="showCheckinsButton_Click"/>
+                    <Button x:Name="showTipsButton" Content="Show Tips" HorizontalAlignment="Left" Height="32" Margin="752,457,0,0" VerticalAlignment="Top" Width="118" Click="showTipsButton_Click"/>
+                    <GroupBox x:Name="groupBox7" Header="Filter by Price:" HorizontalAlignment="Left" Height="74" Margin="870,22,0,0" VerticalAlignment="Top" Width="295" />
+                    <CheckBox x:Name="twoMoneyBox" Content="CheckBox" HorizontalAlignment="Left" Height="17" Margin="898,69,0,0" VerticalAlignment="Top" Width="16" Click="twoMoneyBox_Click"/>
+                    <Label x:Name="label7" Content="$$" HorizontalAlignment="Left" Height="32" Margin="916,62,0,0" VerticalAlignment="Top" Width="32"/>
+                    <CheckBox x:Name="oneMoneyBox" Content="CheckBox" HorizontalAlignment="Left" Height="16" Margin="898,48,0,0" VerticalAlignment="Top" Width="18" Click="oneMoneyBox_Click"/>
+                    <Label x:Name="label7_Copy" Content="$" HorizontalAlignment="Left" Height="32" Margin="916,43,0,0" VerticalAlignment="Top" Width="32" RenderTransformOrigin="0.672,0.552"/>
+                    <CheckBox x:Name="threeMoneyBox" Content="CheckBox" HorizontalAlignment="Left" Height="15" Margin="982,48,0,0" VerticalAlignment="Top" Width="18" Click="threeMoneyBox_Click"/>
+                    <Label x:Name="label7_Copy1" Content="$$$" HorizontalAlignment="Left" Height="32" Margin="1000,43,0,0" VerticalAlignment="Top" Width="32"/>
+                    <CheckBox x:Name="fourMoneyBox" Content="CheckBox" HorizontalAlignment="Left" Height="16" Margin="982,70,0,0" VerticalAlignment="Top" Width="18" Click="fourMoneyBox_Click"/>
+                    <Label x:Name="label7_Copy2" Content="$$$$" HorizontalAlignment="Left" Height="32" Margin="1000,63,0,0" VerticalAlignment="Top" Width="56"/>
+                    <GroupBox x:Name="groupBox8" Header="Filter by Attributes:" HorizontalAlignment="Left" Height="186" Margin="870,101,0,0" VerticalAlignment="Top" Width="172"/>
+                    <Label x:Name="label8" Content="Accepts Credit Cards" HorizontalAlignment="Left" Height="25" Margin="907,116,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <Label x:Name="label8_Copy" Content="Takes Reservations " HorizontalAlignment="Left" Height="27" Margin="906,132,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <Label x:Name="label8_Copy1" Content="Wheelchair Accessible " HorizontalAlignment="Left" Height="27" Margin="906,148,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="acceptsCardBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,120,0,0" VerticalAlignment="Top" Width="16"  Click="acceptsCardBox_Click"/>
+                    <CheckBox x:Name="takesReservBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,136,0,0" VerticalAlignment="Top" Width="16" Click="takesReservBox_Click"/>
+                    <CheckBox x:Name="wheelchairBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,152,0,0" VerticalAlignment="Top" Width="16" Click="wheelchairBox_Click"/>
+                    <Label x:Name="label8_Copy2" Content="Outdoor Seating " HorizontalAlignment="Left" Height="27" Margin="906,164,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="outdoorSeatingBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,168,0,0" VerticalAlignment="Top" Width="16" Click="outdoorSeatingBox_Click"/>
+                    <Label x:Name="label8_Copy3" Content="Good for Kids" HorizontalAlignment="Left" Height="27" Margin="906,180,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="kidsBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,184,0,0" VerticalAlignment="Top" Width="16" Click="kidsBox_Click"/>
+                    <Label x:Name="label8_Copy4" Content="Good for Groups" HorizontalAlignment="Left" Height="27" Margin="906,196,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="groupsBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,200,0,0" VerticalAlignment="Top" Width="16"  Click="groupsBox_Click"/>
+                    <Label x:Name="label8_Copy5" Content="Delivery" HorizontalAlignment="Left" Height="27" Margin="906,212,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="deliveryBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,216,0,0" VerticalAlignment="Top" Width="16" Click="deliveryBox_Click"/>
+                    <Label x:Name="label8_Copy6" Content="Take Out" HorizontalAlignment="Left" Height="27" Margin="906,228,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="takeOutBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,232,0,0" VerticalAlignment="Top" Width="16" Click="takeOutBox_Click"/>
+                    <Label x:Name="label8_Copy7" Content="Free Wi-Fi" HorizontalAlignment="Left" Height="27" Margin="906,244,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="wifiBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,248,0,0" VerticalAlignment="Top" Width="16" Click="wifiBox_Click"/>
+                    <Label x:Name="label8_Copy8" Content="Bike Parking" HorizontalAlignment="Left" Height="27" Margin="906,260,0,0" VerticalAlignment="Top" Width="132" FontSize="10"/>
+                    <CheckBox x:Name="bikeParkingBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="885,264,0,0" VerticalAlignment="Top" Width="16" Click="bikeParkingBox_Click"/>
+                    <GroupBox x:Name="groupBox9" Header="Filter by Meal:" HorizontalAlignment="Left" Height="186" Margin="1047,101,0,0" VerticalAlignment="Top" Width="118"/>
+                    <Label x:Name="label8_Copy9" Content="Breakfast" HorizontalAlignment="Left" Height="27" Margin="1082,117,0,0" VerticalAlignment="Top" Width="83" FontSize="10"/>
+                    <CheckBox x:Name="breakfastBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="1061,121,0,0" VerticalAlignment="Top" Width="16" Click="breakfastBox_Click"/>
+                    <Label x:Name="label8_Copy10" Content="Lunch" HorizontalAlignment="Left" Height="27" Margin="1082,133,0,0" VerticalAlignment="Top" Width="83" FontSize="10"/>
+                    <CheckBox x:Name="lunchBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="1061,137,0,0" VerticalAlignment="Top" Width="16" Click="lunchBox_Click"/>
+                    <Label x:Name="label8_Copy11" Content="Brunch" HorizontalAlignment="Left" Height="27" Margin="1082,149,0,0" VerticalAlignment="Top" Width="83" FontSize="10"/>
+                    <CheckBox x:Name="brunchBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="1061,153,0,0" VerticalAlignment="Top" Width="16" Click="brunchBox_Click"/>
+                    <Label x:Name="label8_Copy12" Content="Dinner" HorizontalAlignment="Left" Height="27" Margin="1082,165,0,0" VerticalAlignment="Top" Width="83" FontSize="10"/>
+                    <CheckBox x:Name="dinnerBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="1061,169,0,0" VerticalAlignment="Top" Width="16" Click="dinnerBox_Click"/>
+                    <Label x:Name="label8_Copy13" Content="Dessert" HorizontalAlignment="Left" Height="27" Margin="1082,181,0,0" VerticalAlignment="Top" Width="83" FontSize="10"/>
+                    <CheckBox x:Name="dessertBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="1061,185,0,0" VerticalAlignment="Top" Width="16" Click="dessertBox_Click"/>
+                    <Label x:Name="label8_Copy14" Content="Late Night" HorizontalAlignment="Left" Height="27" Margin="1082,197,0,0" VerticalAlignment="Top" Width="83" FontSize="10"/>
+                    <CheckBox x:Name="lateNightBox" Content="CheckBox" HorizontalAlignment="Left" Height="14" Margin="1061,201,0,0" VerticalAlignment="Top" Width="16" Click="lateNightBox_Click"/>
+                    <ListBox x:Name="selectedBusinessDetailsListBox" HorizontalAlignment="Left" Height="145" Margin="885,376,0,0" VerticalAlignment="Top" Width="272"/>
+                    <GroupBox x:Name="groupBox10" Header="Sort Results By:" HorizontalAlignment="Left" Height="66" Margin="873,287,0,0" VerticalAlignment="Top" Width="292">
+                        <ComboBox x:Name="sortResultsList" HorizontalAlignment="Left" Height="29" Margin="15,8,0,0" VerticalAlignment="Top" Width="247" SelectionChanged="sortResultsList_SelectionChanged"/>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
