@@ -7,7 +7,7 @@ AttributeFiles=4
 BusinessFiles=1
 CategoryFiles=2
 CheckinFiles=70
-FriendFiles=340
+FriendFiles=63
 HourFiles=3
 ReviewFiles=26
 TipFiles=4
@@ -23,7 +23,7 @@ formatedPath+=splitPath[len(splitPath)-1]
 
 outfile = open("uploadSQL.sql", 'w',encoding="latin-1")
 
-outfile.write('\\i '+formatedPath+'/SQLFiles/uploadTables.sql\n')
+# outfile.write('\\i '+formatedPath+'/SQLFiles/uploadTables.sql\n')
 
 
 # for i in range(0,BusinessFiles):
@@ -45,12 +45,12 @@ outfile.write('\\i '+formatedPath+'/SQLFiles/uploadTables.sql\n')
 #     outfile.write('\\i '+formatedPath+'/ParsedData/User/users'+str(i)+'.sql\n')    
 
 # for i in range(0,TipFiles):
-    # outfile.write('\\i '+formatedPath+'/ParsedData/Tip/tips'+str(i)+'.sql\n')    
+#     outfile.write('\\i '+formatedPath+'/ParsedData/Tip/tips'+str(i)+'.sql\n')    
 
-for i in range(0,ReviewFiles):
-    outfile.write('\\i '+formatedPath+'/ParsedData/Review/Review'+str(i)+'.sql\n')   
+# for i in range(0,ReviewFiles):
+#     outfile.write('\\i '+formatedPath+'/ParsedData/Review/Review'+str(i)+'.sql\n')   
 
-# for i in range(0,FriendFiles):
-#     outfile.write('\\i '+formatedPath+'/ParsedData/Friend/friends'+str(i)+'.sql\n')    
+for i in range(0,FriendFiles):
+    outfile.write('\\i '+formatedPath+'/ParsedData/Friend/friends'+str(i)+'.sql\n')    
 
 outfile.close()
