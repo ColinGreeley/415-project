@@ -1,0 +1,17 @@
+﻿<Window x:Class="WpfApp2.ViewTips"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp2"
+        mc:Ignorable="d"
+        Title="ViewTips" Height="450" Width="800">
+    <Grid>
+        <TextBox x:Name="newTip" HorizontalAlignment="Left" Height="53" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="656"/>
+        <DataGrid x:Name="Alltips" HorizontalAlignment="Left" Height="176" Margin="10,84,0,0" VerticalAlignment="Top" Width="656" SelectionChanged="Alltips_SelectionChanged"/>
+        <DataGrid x:Name="FriendsTips" HorizontalAlignment="Left" Height="100" Margin="10,293,0,0" VerticalAlignment="Top" Width="656"/>
+        <Button x:Name="AddTip" Content="Add Tip" HorizontalAlignment="Left" Margin="689,10,0,0" VerticalAlignment="Top" Width="75" Height="53" Click="AddTip_Click"/>
+        <Button x:Name="Like" Content="Likes" HorizontalAlignment="Left" Margin="689,84,0,0" VerticalAlignment="Top" Width="75" Height="42" Click="Like_Click"/>
+
+    </Grid>
+</Window>

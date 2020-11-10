@@ -1,0 +1,23 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp2"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="WpfApp2.ViewCheckIns"
+        mc:Ignorable="d"
+        Title="ViewCheckIns" Height="600" Width="800">
+    <Grid>
+        <ScrollViewer HorizontalAlignment="Left" Height="550" Margin="0,10,0,0" VerticalAlignment="Top" Width="784">
+            <chartingToolkit:Chart Title="Number of Check-ins per Month" Name="checkInChart">
+                <chartingToolkit:Chart.DataContext>
+                    <PointCollection></PointCollection>
+                </chartingToolkit:Chart.DataContext>
+
+                <chartingToolkit:ColumnSeries DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" Title="# of Check-ins"/>
+
+            </chartingToolkit:Chart>
+        </ScrollViewer>
+
+    </Grid>
+</Window>

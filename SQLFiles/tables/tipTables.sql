@@ -10,7 +10,7 @@ CREATE TABLE Tip(
 	hour Integer NOT NULL,
 	minute Integer NOT NULL,
 	second INteger NOT NULL,
-	PRIMARY KEY(businessid,userid,year,month,day,hour,minute,second),
-	FOREIGN KEY(businessid) REFERENCES Business(business_id),
-	FOREIGN KEY(userid) REFERENCES Users(user_id)
+	PRIMARY KEY(business_id,user_id,year,month,day,hour,minute,second),
+	FOREIGN KEY(business_id) REFERENCES Business(business_id),
+	FOREIGN KEY(user_id) REFERENCES Users(user_id)
 );
