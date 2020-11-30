@@ -6,11 +6,11 @@ from password import password
 
 
 def connect_to_server():
-    connection = psycopg2.connect(user="postgres",
-                                password="1234",
+    connection = psycopg2.connect(user="group",
+                                password="group",
                                 host="127.0.0.1",
                                 port="5432",
-                                database="415_Database")
+                                database="group")
     return connection
 
 def recommended_business_query(user_id, min_stars, min_reviews):
