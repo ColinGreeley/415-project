@@ -1,7 +1,5 @@
 import psycopg2
 import pandas as pd
-from flask import Flask, jsonify, request
-from flask_cors import CORS
 import argparse
 import time
 
