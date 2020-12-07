@@ -43,10 +43,16 @@ namespace Lucky13_Milestone2
 
     public class UserTips
     {
-        public string date { get; set; }
         public string user_name { get; set; }
         public int likes { get; set; }
         public string tipText { get; set; }
+        public int day { get; set; }
+        public int month { get; set; }
+        public int year { get; set; }
+        public int hour { get; set; }
+        public int minute { get; set; }
+        public int second { get; set; }
+        public DateTime date { get; set; }
     }
 
     public class curUserSelected
@@ -77,6 +83,5 @@ namespace Lucky13_Milestone2
         public string day { get; set; }
         public string time { get; set; }
     }
-
 
 }

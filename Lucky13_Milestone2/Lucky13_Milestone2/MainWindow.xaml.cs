@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Npgsql;
 
 namespace Lucky13_Milestone2
 {
@@ -38,7 +39,7 @@ namespace Lucky13_Milestone2
 
         private string buildConnectionString()
         {
-            return ""; //"Host = localhost; Username = postgres; Database = Milestone3db; password = 605027";
+            return "Host = localhost; Username = postgres; Database = 415Project; password = 605027";
         }
 
         private void addFriendsDataColums2Grid()
@@ -178,13 +179,13 @@ namespace Lucky13_Milestone2
 
             if (inputUserTextBox.Text.Length > 0)
             {
-                /*using (var connection = new NpgsqlConnection(buildConnectionString()))
+                using (var connection = new NpgsqlConnection(buildConnectionString()))
                 {
                     connection.Open();
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT distinct user_id FROM yelpuser WHERE name = '" + inputUserTextBox.Text + "' ORDER BY user_id";
+                        cmd.CommandText = "SELECT distinct user_id FROM users WHERE name like '" + inputUserTextBox.Text + "' ORDER BY user_id asc";
                         using (var reader = cmd.ExecuteReader())
                             try
                             {
@@ -203,7 +204,7 @@ namespace Lucky13_Milestone2
                                 connection.Close();
                             }
                     }
-                }*/
+                }
             }
         }
 
@@ -226,14 +227,14 @@ namespace Lucky13_Milestone2
         private int[] updateCounts(string userID)
         {
             int[] totals = new int[2];
-            /*using (var connection = new NpgsqlConnection(buildConnectionString()))
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
                 connection.Open();
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = connection;
 
-                    cmd.CommandText = "SELECT COUNT(tiptext), SUM(likes) FROM tip WHERE user_id = '" + userID + "'; ";
+                    cmd.CommandText = "SELECT COUNT(tip_text), COALESCE(SUM(likes), 0) AS TotalLikes FROM tip WHERE user_id = '" + userID + "'; ";
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -244,12 +245,12 @@ namespace Lucky13_Milestone2
                         }
                     }
 
-                    cmd.CommandText = "UPDATE yelpuser SET tipcount = " + totals[0] + ", totallikes = " + totals[1] + " WHERE user_id = '" + userID + "' ;";
+                    cmd.CommandText = "UPDATE users SET tipcount = " + totals[0] + ", total_likes = " + totals[1] + " WHERE user_id = '" + userID + "' ;";
                     cmd.ExecuteNonQuery();
 
                 }
                 connection.Close();
-            }*/
+            }
             return totals;           
         }
 
@@ -258,72 +259,80 @@ namespace Lucky13_Milestone2
             clearUserData();
             friendsDataGrid.Items.Clear();
             friendsTipsDataGrid.Items.Clear();
+            List<string> friendIds = new List<string>();
             if (listBox.SelectedIndex > -1)
             {
-                //using (var connection = new NpgsqlConnection(buildConnectionString()))
-                //{
-                //    connection.Open();
-                //    using (var cmd = new NpgsqlCommand())
-                //    {
-                //        cmd.Connection = connection;
-                //        int[] counts = updateCounts(listBox.SelectedItem.ToString());  // cur user
-                //        cmd.CommandText = "SELECT * FROM yelpuser WHERE user_id = '" + listBox.SelectedItem.ToString() + "' ORDER BY user_id";
-                //        using (var reader = cmd.ExecuteReader())
-                //        {
+                using (var connection = new NpgsqlConnection(buildConnectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        int[] counts = updateCounts(listBox.SelectedItem.ToString());  // cur user
+                        cmd.CommandText = "SELECT * FROM users WHERE user_id = '" + listBox.SelectedItem.ToString() + "' ORDER BY user_id";
+                        using (var reader = cmd.ExecuteReader())
+                        {
 
-                //            while (reader.Read())
-                //            {
-                //                curUser.userID = reader.GetString(0);
-                //                curUser.name = reader.GetString(1);
-                //                nameTextBox.Text = curUser.name;
-                //                starsTextBox.Text = reader.GetDouble(2).ToString();
-                //                fansTextBox.Text = reader.GetInt32(3).ToString();
-                //                yelpSinceTxt.Text = reader.GetDate(8).ToString();
-                //                funnyTxt.Text = reader.GetInt32(5).ToString();
-                //                coolTxt.Text = reader.GetInt32(4).ToString();
-                //                usefulTxt.Text = reader.GetInt32(6).ToString();
-                //                totalTipLikesTxt.Text = reader.GetInt32(7).ToString();
-                //                tipCountTxt.Text = reader.GetInt32(11).ToString();
-                //                if (reader.GetDouble(9) != 0.0 && reader.GetDouble(10) != 0.0)
-                //                {
-                //                    latTxt.Text = reader.GetDouble(9).ToString();
-                //                    longTxt.Text = reader.GetDouble(10).ToString();
-                //                }
-                //            }
-                //        }
-                //        cmd.CommandText = "SELECT distinct * FROM yelpuser, (SELECT DISTINCT friend.friend_id FROM friend " +
-                //            "WHERE friend.user_id = '" + listBox.SelectedItem.ToString() + "') as fri WHERE fri.friend_id = yelpuser.user_id; ";
-                //        using (var reader = cmd.ExecuteReader())
-                //        {
-                //            while (reader.Read())
-                //            {
-                //                string id = reader.GetString(0);
-                //                string stars = reader.GetDouble(2).ToString();
-                //                string nme = reader.GetString(1);
-                //                string since = reader.GetDateTime(8).ToString();
-                //                int totLik = reader.GetInt16(7);
-                //                friendsDataGrid.Items.Add(new Friend { friend_id = id, friend_name = nme, friend_stars = stars, yelping_since = since, friend_total_likes = totLik });
-                //            }
-                //        }
+                            while (reader.Read())
+                            {
+                                starsTextBox.Text = reader.GetDouble(0).ToString();
+                                coolTxt.Text = reader.GetInt32(1).ToString();
+                                fansTextBox.Text = reader.GetInt32(2).ToString();
+                                funnyTxt.Text = reader.GetInt32(3).ToString();
+                                usefulTxt.Text = reader.GetInt32(4).ToString();
 
-                //        StringBuilder command = new StringBuilder();
-                //        command.Append("(SELECT tip.user_id, yelpuser.name, business.business_name, business.city, tip.tiptext, tip.tipdate FROM yelpuser, business, tip, (SELECT distinct user_id " +
-                //                "FROM yelpuser, (SELECT DISTINCT friend_id FROM friend WHERE user_id = '" + listBox.SelectedItem.ToString() + "') as a WHERE a.friend_id = yelpuser.user_id) as b " +
-                //                "WHERE b.user_id = yelpuser.user_id and business.business_id = tip.business_id and tip.user_id = b.user_id ) as ti");
+                                curUser.name = reader.GetString(5);
+                                nameTextBox.Text = curUser.name;
 
-                //        cmd.CommandText = "SELECT name, business_name, city, tiptext, tipdate FROM " + command.ToString() +
-                //            " WHERE tipdate IN( SELECT MAX(tipdate) FROM " + command.ToString() + " GROUP BY user_id ) ORDER BY user_id desc";
+                                tipCountTxt.Text = reader.GetInt32(6).ToString();
 
-                //        using (var reader = cmd.ExecuteReader())
-                //        {
-                //            while (reader.Read())
-                //            {
-                //                friendsTipsDataGrid.Items.Add(new Tip { user_name = reader.GetString(0), business_name = reader.GetString(1), city = reader.GetString(2), tipText = reader.GetString(3), tipDate = reader.GetDateTime(4).ToString() });
-                //            }
-                //        }
-                //    }
-                //    connection.Close();
-                //}
+                                curUser.userID = reader.GetString(7);
+
+                                yelpSinceTxt.Text = reader.GetString(8);
+
+                                totalTipLikesTxt.Text = reader.GetInt32(9).ToString();
+
+                                if (reader.GetDouble(9) != 0.0 && reader.GetDouble(10) != 0.0)
+                                {
+                                    latTxt.Text = reader.GetDouble(9).ToString();
+                                    longTxt.Text = reader.GetDouble(10).ToString();
+                                }
+                            }
+                        }
+                        cmd.CommandText = "SELECT distinct * FROM users, (SELECT DISTINCT friends.friend_id FROM friends " +
+                            "WHERE friends.user_id = '" + listBox.SelectedItem.ToString() + "') as fri WHERE fri.friend_id = users.user_id; ";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string id = reader.GetString(7); // 
+                                string stars = reader.GetDouble(0).ToString(); //
+                                string nme = reader.GetString(5); //
+                                string since = reader.GetString(8); //
+                                int totLik = reader.GetInt16(9);
+                                friendIds.Add(id);
+                                friendsDataGrid.Items.Add(new Friend { friend_id = id, friend_name = nme, friend_stars = stars, yelping_since = since, friend_total_likes = totLik });
+                            }
+                        }
+                        /*
+                        StringBuilder command = new StringBuilder();
+                        command.Append("(SELECT tip.user_id, users.name, business.name, business.city, tip.tip_text, tip.year, tip.month, tip.day, tip.hour, tip.minute, tip.second FROM users, business, tip, (SELECT distinct user_id " +
+                                "FROM users, (SELECT DISTINCT friend_id FROM friends WHERE user_id = '" + listBox.SelectedItem.ToString() + "') as a WHERE a.friend_id = users.user_id) as b " +
+                                "WHERE b.user_id = users.user_id and business.business_id = tip.business_id and tip.user_id = b.user_id ) as ti");
+
+                        cmd.CommandText = "SELECT name, name, city, tip_text, year, month, day, hour, minute, second FROM " + command.ToString() +
+                            " WHERE year IN( SELECT MAX(year) FROM " + command.ToString() + " GROUP BY user_id ) ORDER BY user_id desc";
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                friendsTipsDataGrid.Items.Add(new Tip { user_name = reader.GetString(0), /*name = reader.GetString(1),*/ /*city = reader.GetString(2), tipText = reader.GetString(3), tipDate = reader.GetDateTime(4).ToString() });
+                            }
+                        }*/
+                    }
+                    connection.Close();
+                }
             }
         }
 
@@ -357,39 +366,33 @@ namespace Lucky13_Milestone2
 
         private void addStates()
         {
-            List<string> states = new List<string>() { "AK", "CA", "MD", "NJ", "WA" };
-            foreach (string state in states)
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
-                StateList.Items.Add(state);
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "SELECT distinct state FROM business ORDER BY state";
+                    try
+                    {
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                            StateList.Items.Add(reader.GetString(0));
+
+                    }
+                    catch (NpgsqlException ex)
+                    {
+
+                        Console.WriteLine(ex.Message.ToString());
+                        MessageBox.Show("SQL Error - " + ex.Message.ToString());
+
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
             }
-            //using (var connection = new NpgsqlConnection(buildConnectionString()))
-            //{
-            //    connection.Open();
-            //    using (var cmd = new NpgsqlCommand())
-            //    {
-            //        cmd.Connection = connection;
-            //        cmd.CommandText = "SELECT distinct state FROM business ORDER BY state";
-            //        try
-            //        {
-            //            var reader = cmd.ExecuteReader();
-            //            while (reader.Read())
-            //                StateList.Items.Add(reader.GetString(0));
-
-            //        }
-            //        catch (NpgsqlException ex)
-            //        {
-
-            //            Console.WriteLine(ex.Message.ToString());
-            //            MessageBox.Show("SQL Error - " + ex.Message.ToString());
-
-            //        }
-            //        finally
-            //        {
-            //            connection.Close();
-            //        }
-            //    }
-            //}
-
         }
 
         private void StateList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -397,57 +400,35 @@ namespace Lucky13_Milestone2
             CityList.Items.Clear();
             if (StateList.SelectedIndex > -1)
             {
-                List<string> cities = new List<string>();
-                switch (StateList.SelectedItem.ToString())
+
+                using (var connection = new NpgsqlConnection(buildConnectionString()))
                 {
-                    case "AK":
-                        cities = new List<string>() { "Anchorage", "Delta Junction", "Fairbanks" };
-                        break;
-                    case "CA":
-                        cities = new List<string>() { "La Jolla", "Sacremento", "San Francisco", "Santa Clara" };
-                        break;
-                    case "MD":
-                        cities = new List<string>() { "Baltimore", "Bethesda", "Chevy Chase" };
-                        break;
-                    case "NJ":
-                        cities = new List<string>() { "Hoboken", "New Brunswick" };
-                        break;
-                    case "WA":
-                        cities = new List<string>() { "Colfax", "Issaquah", "Pullman", "Seattle", "Snoqualmie" };
-                        break;
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        //cmd.CommandText = "SELECT distinct city FROM business WHERE state = '" + StateList.SelectedItem.ToString() + "' ORDER BY city";
+                        cmd.CommandText = "SELECT distinct (SELECT INITCAP (city)) AS tempCity FROM business WHERE state = '" + StateList.SelectedItem.ToString() + "' ORDER BY tempCity";
+                        try
+                        {
+                            var reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                                CityList.Items.Add(reader.GetString(0));
 
+                        }
+                        catch (NpgsqlException ex)
+                        {
+
+                            Console.WriteLine(ex.Message.ToString());
+                            MessageBox.Show("SQL Error - " + ex.Message.ToString());
+
+                        }
+                        finally
+                        {
+                            connection.Close();
+                        }
+                    }
                 }
-                foreach (string city in cities)
-                {
-                    CityList.Items.Add(city);
-                }
-                //    using (var connection = new NpgsqlConnection(buildConnectionString()))
-                //    {
-                //        connection.Open();
-                //        using (var cmd = new NpgsqlCommand())
-                //        {
-                //            cmd.Connection = connection;
-                //            cmd.CommandText = "SELECT distinct city FROM business WHERE state = '" + StateList.SelectedItem.ToString() + "' ORDER BY city";
-                //            try
-                //            {
-                //                var reader = cmd.ExecuteReader();
-                //                while (reader.Read())
-                //                    CityList.Items.Add(reader.GetString(0));
-
-                //            }
-                //            catch (NpgsqlException ex)
-                //            {
-
-                //                Console.WriteLine(ex.Message.ToString());
-                //                MessageBox.Show("SQL Error - " + ex.Message.ToString());
-
-                //            }
-                //            finally
-                //            {
-                //                connection.Close();
-                //            }
-                //        }
-                //    }
             }
         }
 
@@ -457,70 +438,35 @@ namespace Lucky13_Milestone2
 
             if (CityList.SelectedIndex > -1)
             {
-                List<string> zips = new List<string>();
-                switch (CityList.SelectedItem.ToString())
+
+                using (var connection = new NpgsqlConnection(buildConnectionString()))
                 {
-                    case "Anchorage":
-                        zips = new List<string>() { "99501", "99505", "99511" };
-                        break;
-                    case "Delta Junction":
-                        zips = new List<string>() { "99737" };
-                        break;
-                    case "La Jolla":
-                        zips = new List<string>() { "92037" };
-                        break;
-                    case "Hoboken":
-                        zips = new List<string>() { "07030", "07086" };
-                        break;
-                    case "New Brunswick":
-                        zips = new List<string>() { "08901", "08906" };
-                        break;
-                    case "Sacremento":
-                        zips = new List<string>() { "94203", "94207" };
-                        break;
-                    case "Snoqualmie":
-                        zips = new List<string>() { "98065" };
-                        break;
-                    case "Issaquah":
-                        zips = new List<string>() { "98027", "98029" };
-                        break;
-                    default:
-                        zips = new List<string>() { "99163" };
-                        break;
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT distinct zipcode FROM business WHERE city = '" + CityList.SelectedItem.ToString() + "' ORDER BY zipcode";
+                        try
+                        {
+                            var reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                                ZipList.Items.Add(reader.GetString(0));
 
+                        }
+                        catch (NpgsqlException ex)
+                        {
+
+                            Console.WriteLine(ex.Message.ToString());
+                            MessageBox.Show("SQL Error - " + ex.Message.ToString());
+
+                        }
+                        finally
+                        {
+                            connection.Close();
+                        }
+                    }
                 }
-                foreach (string zip in zips)
-                {
-                    ZipList.Items.Add(zip);
-                }
-                    //    using (var connection = new NpgsqlConnection(buildConnectionString()))
-                    //    {
-                    //        connection.Open();
-                    //        using (var cmd = new NpgsqlCommand())
-                    //        {
-                    //            cmd.Connection = connection;
-                    //            cmd.CommandText = "SELECT distinct zipcode FROM business WHERE city = '" + CityList.SelectedItem.ToString() + "' ORDER BY zipcode";
-                    //            try
-                    //            {
-                    //                var reader = cmd.ExecuteReader();
-                    //                while (reader.Read())
-                    //                    ZipList.Items.Add(reader.GetString(0));
-
-                    //            }
-                    //            catch (NpgsqlException ex)
-                    //            {
-
-                    //                Console.WriteLine(ex.Message.ToString());
-                    //                MessageBox.Show("SQL Error - " + ex.Message.ToString());
-
-                    //            }
-                    //            finally
-                    //            {
-                    //                connection.Close();
-                    //            }
-                    //        }
-                    //    }
-                }
+            }
         }
 
         private void ZipList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -537,52 +483,37 @@ namespace Lucky13_Milestone2
 
             if (ZipList.SelectedIndex > -1)
             {
-                // -------------------
+                using (var connection = new NpgsqlConnection(buildConnectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
 
-                string cty = CityList.SelectedItem.ToString();
-                string ste = StateList.SelectedItem.ToString();
-                string zp = ZipList.SelectedItem.ToString();
-                string addy = "6628 Monroe Ave NE ";
+                        cmd.CommandText = "SELECT DISTINCT LTRIM(category) AS LeftTrimmedString FROM business, categories " +
+                            "WHERE business.state = '" + StateList.SelectedItem.ToString() + "' and business.city = '" + CityList.SelectedItem.ToString() + "' " +
+                            "and business.zipcode = '" + ZipList.SelectedItem.ToString() + "' and business.business_id = categories.business_id  ORDER BY LeftTrimmedString ASC;";
 
+                        try
+                        {
+                            var reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                                categorylistBox.Items.Add(reader.GetString(0));
 
+                        }
+                        catch (NpgsqlException ex)
+                        {
 
-                //if (ZipList.SelectedIndex > -1 && StateList.SelectedIndex > -1 && CityList.SelectedIndex > -1)
-                //{
-                businessGrid.Items.Add(new Business() { bid = "Awz12x74", name = "Joey Bob", city = cty, state = ste, zip = zp, address = addy, star = 1.4, totalCheckins = 25, numTips = 14 });
+                            Console.WriteLine(ex.Message.ToString());
+                            MessageBox.Show("SQL Error - " + ex.Message.ToString());
 
-                // ---------------
-
-
-                //using (var connection = new NpgsqlConnection(buildConnectionString()))
-                //{
-                //    connection.Open();
-                //    using (var cmd = new NpgsqlCommand())
-                //    {
-                //        cmd.Connection = connection;
-
-                //        cmd.CommandText = "SELECT DISTINCT category_name FROM business, categories WHERE business.state = '" + StateList.SelectedItem.ToString() + "' and business.city ='" + CityList.SelectedItem.ToString() + "' " +
-                //  "and business.zipcode = '" + ZipList.SelectedItem.ToString() + "' and business.business_id = categories.business_id  ORDER BY categories.category_name;";
-
-                //        try
-                //        {
-                //            var reader = cmd.ExecuteReader();
-                //            while (reader.Read())
-                //                categorylistBox.Items.Add(reader.GetString(0));
-
-                //        }
-                //        catch (NpgsqlException ex)
-                //        {
-
-                //            Console.WriteLine(ex.Message.ToString());
-                //            MessageBox.Show("SQL Error - " + ex.Message.ToString());
-
-                //        }
-                //        finally
-                //        {
-                //            connection.Close();
-                //        }
-                //    }
-                //}
+                        }
+                        finally
+                        {
+                            connection.Close();
+                        }
+                    }
+                }
             }
         }
 
@@ -674,36 +605,72 @@ namespace Lucky13_Milestone2
         {
 
             selectedBusinessDetailsListBox.Items.Clear();
-            //using (var comm = new NpgsqlConnection(buildConnectionString()))
-            //{
-            //    comm.Open();
-            //    using (var cmd = new NpgsqlCommand())
-            //    {
-            //        cmd.Connection = comm;
-            //        cmd.CommandText = "SELECT * FROM categories WHERE business_id = '" + B.bid + "' ORDER BY category_name ";
+            using (var comm = new NpgsqlConnection(buildConnectionString()))
+            {
 
-            //        selectedBusinessDetailsListBox.Items.Add("Categories");
-            //        using (var reader = cmd.ExecuteReader())
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                selectedBusinessDetailsListBox.Items.Add("\t" + reader.GetString(1));
-            //            }
-            //        }
+                //comm.Open();
+                //using (var cmd = new NpgsqlCommand())
+                //{
 
-            //        cmd.CommandText = "SELECT * FROM attributes WHERE business_id = '" + B.bid + "' " +
-            //            "AND attr_value != 'False' AND attr_value != 'none' ORDER BY attr_name; ";
-            //        selectedBusinessDetailsListBox.Items.Add("Attributes");
-            //        using (var reader = cmd.ExecuteReader())
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                selectedBusinessDetailsListBox.Items.Add("\t" + reader.GetString(1));
-            //            }
-            //        }
-            //        comm.Close();
-            //    }
-            //}
+                //cmd.Connection = comm;
+                /*if (StateList.SelectedItem != null)
+                {
+                    cmdstr += " WHERE state = '" + StateList.SelectedItem.ToString() + "'";
+                }
+                if (CityList.SelectedItem != null)
+                {
+                    cmdstr += " AND city = '" + CityList.SelectedItem.ToString() + "'";
+                }
+                if (ZipList.SelectedItem != null)
+                {
+                    cmdstr += " AND zipcode = '" + ZipList.SelectedItem.ToString() + "'";
+                }
+                cmd.CommandText = "Select Distinct category from categories where business_id IN( " + cmdstr + ")";
+                try
+                {
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                        categorylistBox.Items.Add(reader.GetString(0));                    //Buisness_Grif.Items.Add(new Buisness() { name = reader.GetString(0), state = reader.GetString(1), city = reader.GetString(2) });
+
+                }
+                catch (NpgsqlException ex)
+                {
+                    Console.WriteLine(ex.Message.ToString());
+                    System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                }
+                finally
+                {
+                    comm.Close();
+                }*/
+                comm.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = comm;
+                    cmd.CommandText = "SELECT * FROM categories WHERE business_id = '" + B.bid + "' ORDER BY category";
+
+                    selectedBusinessDetailsListBox.Items.Add("Categories");
+                    using (var reader = cmd.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            selectedBusinessDetailsListBox.Items.Add("\t" + reader.GetString(1));
+                        }
+                    }
+
+                    cmd.CommandText = "SELECT * FROM attributes WHERE business_id = '" + B.bid + "' " +
+                        "AND attribute != 'False' AND attribute != 'none' ORDER BY attribute_key; ";
+                    selectedBusinessDetailsListBox.Items.Add("Attributes");
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            selectedBusinessDetailsListBox.Items.Add("\t" + reader.GetString(1));
+                        }
+                    }
+                    comm.Close();
+                }
+            }
 
         }
 
@@ -716,40 +683,41 @@ namespace Lucky13_Milestone2
                 addresseBusTextBlock.Text = B.address + ", " + B.city + ", " + B.state;
                 DayOfWeek today = DateTime.Today.DayOfWeek;
 
-                //using (var comm = new NpgsqlConnection(buildConnectionString()))
-                //{
-                //    comm.Open();
-                //    using (var cmd = new NpgsqlCommand())
-                //    {
-                //        cmd.Connection = comm;
-                //        cmd.CommandText = "SELECT day_of_week, open_time, close_time FROM hours WHERE business_id = '" + B.bid + "' ";
+                using (var comm = new NpgsqlConnection(buildConnectionString()))
+                {
+                    comm.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = comm;
+                        cmd.CommandText = "SELECT day, open_time, close_time FROM hours WHERE business_id = '" + B.bid + "' ";
 
-                //        List<Hours> busHours = new List<Hours>();
+                        List<Hours> busHours = new List<Hours>();
 
-                //        using (var reader = cmd.ExecuteReader())
-                //        {
-                //            while (reader.Read())
-                //            {
-                //                busHours.Add(new Hours(reader.GetString(0), reader.GetTimeSpan(1).ToString(), reader.GetTimeSpan(2).ToString()));
-                //            }
-                //        }
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                busHours.Add(new Hours(reader.GetString(0), reader.GetString(1), reader.GetString(2)));
+                            }
+                        }
+                        comm.Close();
 
-                //        bool hoursExist = false;
-                //        foreach (var buis in busHours)
-                //        {
-                //            if (buis.day_week == today.ToString())
-                //            {
-                //                hoursBusTextBlock.Text = "Today (" + today.ToString() + "):  Opens: " + buis.open_time + "    Closes: " + buis.close_time;
-                //                hoursExist = true;
-                //            }
-                //        }
-                //        if (!hoursExist)
-                //            hoursBusTextBlock.Text = "Today (" + today.ToString() + "):   Closed";
+                        bool hoursExist = false;
+                        foreach (var buis in busHours)
+                        {
+                            if (buis.day_week == today.ToString())
+                            {
+                                hoursBusTextBlock.Text = "Today (" + today.ToString() + "):  Opens: " + buis.open_time + "    Closes: " + buis.close_time;
+                                hoursExist = true;
+                            }
+                        }
+                        if (!hoursExist)
+                            hoursBusTextBlock.Text = "Today (" + today.ToString() + "):   Closed";
 
-                //        comm.Close();
-                //    }
+                        
+                    }
 
-                //}
+                }
                 insertCategoriesAttribute(B);
             }
         }
@@ -787,13 +755,13 @@ namespace Lucky13_Milestone2
         private void updateBusinessGridWithAttributes(StringBuilder temp)
         {
             selectedBusinessDetailsListBox.Items.Clear();
-            string sortBy = "ORDER BY business_name ASC";
+            string sortBy = "ORDER BY name ASC";
             if (sortResultsList.SelectedIndex > -1)
             {
                 switch (sortResultsList.SelectedItem.ToString())
                 {
                     case "Name":
-                        sortBy = "ORDER BY business_name ASC";
+                        sortBy = "ORDER BY name ASC";
                         break;
                     case "Highest rated":
                         sortBy = "ORDER BY stars DESC";
@@ -815,66 +783,66 @@ namespace Lucky13_Milestone2
             if (CityList.SelectedIndex > -1 && StateList.SelectedIndex > -1 && ZipList.SelectedIndex > -1)
             {
                 businessGrid.Items.Clear();
-                //using (var comm = new NpgsqlConnection(buildConnectionString()))
-                //{
-                //    comm.Open();
-                //    using (var cmd = new NpgsqlCommand())
-                //    {
-                //        StringBuilder command = new StringBuilder();
-                //        StringBuilder commandEnd = new StringBuilder();
-                //        cmd.Connection = comm;
-                //        if (categorySelectedListBox.Items.Count > 0)
-                //        {
-                //            command.Append(",  (SELECT DISTINCT business_id as bID ");
+                using (var comm = new NpgsqlConnection(buildConnectionString()))
+                {
+                    comm.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        StringBuilder command = new StringBuilder();
+                        StringBuilder commandEnd = new StringBuilder();
+                        cmd.Connection = comm;
+                        if (categorySelectedListBox.Items.Count > 0)
+                        {
+                            command.Append(",  (SELECT DISTINCT business_id as bID ");
 
-                //            command.Append(temp);
-                //            if (temp.ToString().ElementAt(temp.ToString().Length - 1) == ')')
-                //            {
-                //                command.Append(" AND");
-                //            }
-                //            else
-                //            {
-                //                command.Append(" FROM business WHERE");
-                //            }
-                //            command.Append(" business.business_id IN (SELECT business_id FROM categories WHERE category_name = '" + categorySelectedListBox.Items[0].ToString().Trim() + "') ");
-                //            for (int i = 1; i < categorySelectedListBox.Items.Count; i++)
-                //            {
-                //                command.Append("AND business.business_id IN (SELECT business_id FROM categories WHERE category_name = '" + categorySelectedListBox.Items[i].ToString().Trim() + "') ");
-                //            }
-                //            command.Append(") bus ");
-                //            commandEnd.Append("and bus.bID = business.business_id ");
-                //        }
-                //        else
-                //        {
-                //            if (temp.ToString() != " ") // if attributes exist
-                //            {
-                //                command.Append(",  (SELECT DISTINCT business_id as bID ");
-                //                command.Append(temp);
-                //                command.Append(") bus ");
-                //                commandEnd.Append("and bus.bID = business.business_id ");
-                //            }
-                //            else
-                //            {
-                //                command.Append(" ");
-                //                commandEnd.Append(" ");
-                //            }
-                //        }
+                            command.Append(temp);
+                            if (temp.ToString().ElementAt(temp.ToString().Length - 1) == ')')
+                            {
+                                command.Append(" AND");
+                            }
+                            else
+                            {
+                                command.Append(" FROM business WHERE");
+                            }
+                            command.Append(" business.business_id IN (SELECT business_id FROM categories WHERE category = '" + categorySelectedListBox.Items[0].ToString().Trim() + "') ");
+                            for (int i = 1; i < categorySelectedListBox.Items.Count; i++)
+                            {
+                                command.Append("AND business.business_id IN (SELECT business_id FROM categories WHERE category = '" + categorySelectedListBox.Items[i].ToString().Trim() + "') ");
+                            }
+                            command.Append(") bus ");
+                            commandEnd.Append("and bus.bID = business.business_id ");
+                        }
+                        else
+                        {
+                            if (temp.ToString() != " ") // if attributes exist
+                            {
+                                command.Append(",  (SELECT DISTINCT business_id as bID ");
+                                command.Append(temp);
+                                command.Append(") bus ");
+                                commandEnd.Append("and bus.bID = business.business_id ");
+                            }
+                            else
+                            {
+                                command.Append(" ");
+                                commandEnd.Append(" ");
+                            }
+                        }
 
-                //        cmd.CommandText = "SELECT * FROM business " + command.ToString() +
-                //            "WHERE state ='" + StateList.SelectedItem.ToString() + "' and city ='" + CityList.SelectedItem.ToString() + "' " +
-                //            "and zipcode = '" + ZipList.SelectedItem.ToString() + "' " + commandEnd.ToString() + sortBy;
+                        cmd.CommandText = "SELECT * FROM business " + command.ToString() +
+                            "WHERE state ='" + StateList.SelectedItem.ToString() + "' and city ='" + CityList.SelectedItem.ToString() + "' " +
+                            "and zipcode = '" + ZipList.SelectedItem.ToString() + "' " + commandEnd.ToString() + sortBy;
 
-                //        using (var reader = cmd.ExecuteReader())
-                //        {
-                //            while (reader.Read())
-                //            {
-                //                businessGrid.Items.Add(new Business() { bid = reader.GetString(0), name = reader.GetString(1), city = reader.GetString(2), state = reader.GetString(3), zip = reader.GetString(4), address = reader.GetString(7), star = reader.GetDouble(8), totalCheckins = reader.GetInt32(9), numTips = reader.GetInt32(10) });
-                //            }
-                //        }
-                //        comm.Close();
-                //        command.Clear();
-                //    }
-                //}
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                businessGrid.Items.Add(new Business() { bid = reader.GetString(0), name = reader.GetString(1), city = reader.GetString(3), state = reader.GetString(4), zip = reader.GetString(5), address = reader.GetString(2), star = reader.GetDouble(8), totalCheckins = reader.GetInt32(9), numTips = reader.GetInt32(11) });
+                            }
+                        }
+                        comm.Close();
+                        command.Clear();
+                    }
+                }
                 for (int i = 0; i < businessGrid.Items.Count; i++)
                 {
                     calDistance(businessGrid.Items.GetItemAt(i) as Business);
@@ -906,14 +874,14 @@ namespace Lucky13_Milestone2
         private StringBuilder updateOthAttributes()
         {
             StringBuilder command = new StringBuilder();
-            if (whatOtherAttributesSelected.Count > 0)
+            if (whatCostAttributesSelected.Count > 0)
             {
-                //FROM business WHERE
-                command.Append(" business.business_id IN (SELECT business_id FROM attributes WHERE attr_name = '" + whatOtherAttributesSelected[0] + "' AND attr_value = 'True' OR attr_value = 'free')");
-                for (int i = 1; i < whatOtherAttributesSelected.Count; i++)
+                command.Append(" business.business_id IN (SELECT business_id FROM attributes WHERE attribute_key = 'RestaurantsPriceRange2' AND attribute = '" + whatCostAttributesSelected.First().Value + "' ");
+                for (int i = 1; i < whatCostAttributesSelected.Count; i++)
                 {
-                    command.Append(" AND business.business_id IN (SELECT business_id FROM attributes WHERE attr_name = '" + whatOtherAttributesSelected[i] + "' AND attr_value = 'True' OR attr_value = 'free')");
+                    command.Append("OR attribute = '" + whatCostAttributesSelected.Values.ToList()[i] + "' ");
                 }
+                command.Append(")");
             }
             else
                 command.Append("");
