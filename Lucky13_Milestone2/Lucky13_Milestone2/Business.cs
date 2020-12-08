@@ -53,6 +53,11 @@ namespace Lucky13_Milestone2
         public int minute { get; set; }
         public int second { get; set; }
         public DateTime date { get; set; }
+
+        public string getTipText()
+        {
+            return this.tipText;
+        }
     }
 
     public class curUserSelected
@@ -79,9 +84,12 @@ namespace Lucky13_Milestone2
     {
         public string bid { get; set; }
         public int year { get; set; }
-        public string month { get; set; }
-        public string day { get; set; }
-        public string time { get; set; }
+        public int month { get; set; }
+        public int day { get; set; }
+        //public string time { get; set; }
+        public int hour { get; set; }
+        public int minute { get; set; }
+        public int second { get; set; }
     }
 
 }

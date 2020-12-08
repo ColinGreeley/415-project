@@ -292,11 +292,11 @@ namespace Lucky13_Milestone2
 
                                 totalTipLikesTxt.Text = reader.GetInt32(9).ToString();
 
-                                if (reader.GetDouble(9) != 0.0 && reader.GetDouble(10) != 0.0)
-                                {
-                                    latTxt.Text = reader.GetDouble(9).ToString();
-                                    longTxt.Text = reader.GetDouble(10).ToString();
-                                }
+                                //if (reader.GetDouble(9) != 0.0 && reader.GetDouble(10) != 0.0)
+                                //{
+                                //    latTxt.Text = reader.GetDouble(9).ToString();
+                                //    longTxt.Text = reader.GetDouble(10).ToString();
+                                //}
                             }
                         }
                         cmd.CommandText = "SELECT distinct * FROM users, (SELECT DISTINCT friends.friend_id FROM friends " +

@@ -124,8 +124,15 @@ namespace Lucky13_Milestone2
             }
         }
 
+        private DateTime convertToDate(int y, int m, int d, int hr, int min, int sec)
+        {
+            string date = y.ToString() + "-" + m.ToString() + "-" + d.ToString() + " " + hr.ToString() + ":" + min.ToString() + ":" + sec.ToString();
+            return Convert.ToDateTime(date);
+        }
+
         private void addTips()
         {
+            List<UserTips> tips = new List<UserTips>();
             tipGrid.Items.Clear();
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -141,20 +148,27 @@ namespace Lucky13_Milestone2
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
+                            DateTime dat = convertToDate(reader.GetInt32(2), reader.GetInt32(1), reader.GetInt32(0), reader.GetInt32(3), reader.GetInt32(4), reader.GetInt32(5));
                             var data = new UserTips()
                             {
-                                day = reader.GetInt32(0),
-                                month = reader.GetInt32(1),
-                                year = reader.GetInt32(2),
-                                minute = reader.GetInt32(4), // 3 = hour
-                                hour = reader.GetInt32(3), // 5 = sec
-                                second = reader.GetInt32(5), // 4 = min
+                                //day = reader.GetInt32(0),
+                                //month = reader.GetInt32(1),
+                                //year = reader.GetInt32(2),
+                                //minute = reader.GetInt32(4), // 3 = hour
+                                //hour = reader.GetInt32(3), // 5 = sec
+                                //second = reader.GetInt32(5), // 4 = min
+                                date = dat,
                                 tipText = reader.GetString(6),
                                 likes = reader.GetInt32(7),
                                 user_name = reader.GetString(8)
                             };
-
-                            tipGrid.Items.Add(data);
+                            tips.Add(data);
+                            // tipGrid.Items.Add(data);
+                        }
+                        tips.Sort((x, y) => y.date.CompareTo(x.date));
+                        foreach(var tip in tips)
+                        {
+                            tipGrid.Items.Add(tip);
                         }
                     }
                     catch (NpgsqlException ex)
@@ -166,6 +180,7 @@ namespace Lucky13_Milestone2
                     {
                         connection.Close();
                     }
+                    
                 }
             }
         }
@@ -177,60 +192,77 @@ namespace Lucky13_Milestone2
 
         private void addTipButton_Click(object sender, RoutedEventArgs e)
         {
+            if (currentUser.name == null)
+            {
+                MessageBox.Show("Select a user in 'User Information' before adding tips!");
+            }
+            else if(tipTextBox.Text.Length < 1)
+            {
+                MessageBox.Show("Must insert review in 'Insert Tip' text box first!");
+            }
+            else
+            {
+                using (var connection = new NpgsqlConnection(buildConnectionString()))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+
+                        var te = new UserTips() { user_name = currentUser.name, likes = 0, tipText = tipTextBox.Text, day = DateTime.Now.Day, month = DateTime.Now.Month, year = DateTime.Now.Year, hour = DateTime.Now.Hour, minute = DateTime.Now.Minute, second = DateTime.Now.Second };
+                        cmd.Connection = connection;
+
+                        cmd.CommandText = "INSERT INTO tip(user_id, business_id, tip_text, likes, day, month, year, hour, minute, second) VALUES('" +
+                            currentUser.userID + "', '" + selectedBusiness.bid + "',  '" + te.tipText + "', " + te.likes.ToString() + ",  " + te.day.ToString() +
+                            ", " + te.month.ToString() + ", " + te.year.ToString() + ", " + te.hour.ToString() + ", " + te.minute.ToString() + ", " + te.second.ToString() + ");";
+
+                        try
+                        {
+                            cmd.ExecuteNonQuery();
+                            te.date = new DateTime(te.year, te.month, te.day, te.hour, te.minute, te.second);
+                            tipGrid.Items.Insert(0, te);
+                        }
+                        catch (NpgsqlException ex)
+                        {
+                            Console.WriteLine(ex.Message.ToString());
+                            MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                        }
+                        finally
+                        {
+                            connection.Close();
+                        }
+                    }
+                }
+                tipTextBox.Clear();
+            }
+        }
+
+        private void likeTipButton_Click(object sender, RoutedEventArgs e)
+        {
+            int index = tipGrid.SelectedIndex;
+            if (index == -1)
+                index = 0;
+
+            UserTips tempTip = tipGrid.Items.GetItemAt(index) as UserTips;
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
                 connection.Open();
                 using (var cmd = new NpgsqlCommand())
                 {
-
-                    var te = new UserTips() { user_name = currentUser.name, likes = 0, tipText = tipTextBox.Text, day = DateTime.Now.Day, month = DateTime.Now.Month, year = DateTime.Now.Year, hour = DateTime.Now.Hour, minute = DateTime.Now.Minute, second = DateTime.Now.Second };
                     cmd.Connection = connection;
-
-                    //cmd.CommandText = "INSERT INTO tip(user_id, business_id, tipdate, tip_text, likes) VALUES('" +
-                    //    currentUser.userID + "', '" + selectedBusiness.bid + "', '" + te.date + "', '" + te.tipText + "', " + te.likes + ")";
-
-                    cmd.CommandText = "INSERT INTO tip(user_id, business_id, tip_text, likes, day, month, year, hour, minute, second) VALUES('" +
-                        currentUser.userID + "', '" + selectedBusiness.bid + "',  '" + te.tipText + "', " + te.likes.ToString() + ",  " + te.day.ToString() +
-                        ", " + te.month.ToString() + ", " + te.year.ToString() + ", " + te.hour.ToString() + ", " + te.minute.ToString() + ", " + te.second.ToString() + ");";
-
-
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                        te.date = new DateTime(te.year, te.month, te.day, te.hour, te.minute, te.second);
-                        tipGrid.Items.Insert(0, te);
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        Console.WriteLine(ex.Message.ToString());
-                        MessageBox.Show("SQL Error - " + ex.Message.ToString());
-                    }
-                    finally
-                    {
-                        connection.Close();
-                    }
+                    cmd.CommandText = "UPDATE tip SET likes = likes + 1 WHERE tip_text = '" +  tempTip.tipText +"';";
+                    cmd.ExecuteNonQuery();
                 }
+                connection.Close();
             }
-            tipTextBox.Clear();
+            
+            tipGrid.Items.Remove(tempTip);
+            tempTip.likes += 1;
+            tipGrid.Items.Insert(index, tempTip);
         }
 
-        private void likeTipButton_Click(object sender, RoutedEventArgs e)
+        private void tipGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //    using (var connection = new NpgsqlConnection(buildConnectionString()))
-            //    {
-            //        connection.Open();
-            //        using (var cmd = new NpgsqlCommand())
-            //        {
-            //            cmd.Connection = connection;
-            //            cmd.CommandText = "UPDATE tip SET likes = likes + 1 WHERE user_id = '" + currentUser.userID + "' ";
-            //            cmd.ExecuteNonQuery();
-            //        }
-            //        connection.Close();
-            //    }
-            //    UserTips tempTip = tipGrid.Items.GetItemAt(0) as UserTips;
-            //    tipGrid.Items.Remove(tempTip);
-            //    tempTip.likes += 1;
-            //    tipGrid.Items.Insert(0, tempTip);
+
         }
     }
 }

@@ -12,7 +12,7 @@
         <TextBox x:Name="tipTextBox" HorizontalAlignment="Left" Height="61" Margin="265,54,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="498" TextChanged="tipTextBox_TextChanged"/>
         <Label x:Name="newTip" Content="Insert Tip" HorizontalAlignment="Left" Margin="188,54,0,0" VerticalAlignment="Top"/>
         <Button x:Name="addTipButton" Content="Add Tip" HorizontalAlignment="Left" Height="26" Margin="815,23,0,0" VerticalAlignment="Top" Width="133" Click="addTipButton_Click"/>
-        <DataGrid x:Name="tipGrid" Height="214" Margin="65,151,66.667,0" VerticalAlignment="Top" FontSize="14" CanUserResizeRows="False" IsReadOnly="True"/>
+        <DataGrid x:Name="tipGrid" Height="214" Margin="65,151,66.667,0" VerticalAlignment="Top" FontSize="14" CanUserResizeRows="False" IsReadOnly="True" SelectionChanged="tipGrid_SelectionChanged"/>
         <GroupBox x:Name="Business_Tips" Header="Business Tips" HorizontalAlignment="Left" Height="250" Margin="50,125,0,0" VerticalAlignment="Top" Width="1039" RenderTransformOrigin="0.5,0.5">
             <GroupBox.RenderTransform>
                 <TransformGroup>
@@ -26,7 +26,7 @@
         <GroupBox x:Name="groupBox" Header="Friends who reviewed this business" HorizontalAlignment="Left" Height="144" Margin="48,394,0,0" VerticalAlignment="Top" Width="1039">
             <DataGrid x:Name="friendDataGrid" HorizontalAlignment="Left" Height="107" Margin="9,10,0,0" VerticalAlignment="Top" Width="1014"/>
         </GroupBox>
-        <Button x:Name="likeTipButton" Content="Like Most Recent Tip" HorizontalAlignment="Left" Height="26" Margin="815,80,0,0" VerticalAlignment="Top" Width="133" Click="likeTipButton_Click"/>
+        <Button x:Name="likeTipButton" Content="Like Selected Tip" HorizontalAlignment="Left" Height="26" Margin="815,80,0,0" VerticalAlignment="Top" Width="133" Click="likeTipButton_Click"/>
 
     </Grid>
 </Window>

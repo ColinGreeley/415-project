@@ -4,9 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lucky13_Milestone2"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:Compatible="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Compatible;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         mc:Ignorable="d"
         Title="Checkins" Height="517.655" Width="899.31" WindowStartupLocation="CenterScreen">
     <Grid>
-        <ScrollViewer HorizontalAlignment="Left" Height="471" Margin="10,10,0,0" VerticalAlignment="Top" Width="875"/>
+        <ScrollViewer HorizontalAlignment="Left" Height="471" Margin="10,10,0,0" VerticalAlignment="Top" Width="875">
+            <chartingToolkit:Chart Height="450" Width="833" Title="Number of Check-ins per Month" Name="checkinChart">
+                <chartingToolkit:Chart.DataContext>
+                    <PointCollection>1,10 2, 20 3, 30 4, 40</PointCollection>
+                </chartingToolkit:Chart.DataContext>
+                <chartingToolkit:ColumnSeries DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" DataContext="{Binding}" Title="# of Check-ins"/>
+            </chartingToolkit:Chart>
+        </ScrollViewer>
+        <Button x:Name="checkInButton" Content="Check-In" HorizontalAlignment="Left" Height="65" Margin="746,72,0,0" VerticalAlignment="Top" Width="84" Click="checkInButton_Click"/>
     </Grid>
 </Window>
