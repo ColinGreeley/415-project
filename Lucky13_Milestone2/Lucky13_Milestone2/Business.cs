@@ -54,10 +54,6 @@ namespace Lucky13_Milestone2
         public int second { get; set; }
         public DateTime date { get; set; }
 
-        public string getTipText()
-        {
-            return this.tipText;
-        }
     }
 
     public class curUserSelected

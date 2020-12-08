@@ -35,9 +35,11 @@ namespace Lucky13_Milestone2
 
         private void checkinColChart()
         {
+            List<KeyValuePair<int, int>> bCheckins = new List<KeyValuePair<int, int>>();
+            List<KeyValuePair<string, int>> bCheckinsWithMonths = new List<KeyValuePair<string, int>>();
+
             string[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-            List<KeyValuePair<int, int>> myChartData = new List<KeyValuePair<int, int>>();
-            List<KeyValuePair<string, int>> dataWithMonths = new List<KeyValuePair<string, int>>();
+
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
                 connection.Open();
@@ -48,20 +50,19 @@ namespace Lucky13_Milestone2
                     var reader = cmd.ExecuteReader();
                     try
                     {
-                        
                         while (reader.Read())
                         {
-                            myChartData.Add(new KeyValuePair<int, int>(reader.GetInt32(0), reader.GetInt32(1)));
+                            bCheckins.Add(new KeyValuePair<int, int>(reader.GetInt32(0), reader.GetInt32(1)));
                         }
 
-                        myChartData.Sort((x, y) => (x.Key.CompareTo(y.Key)));
+                        bCheckins.Sort((x, y) => (x.Key.CompareTo(y.Key)));
 
-                        foreach (KeyValuePair<int, int> temp in myChartData)
+                        foreach (KeyValuePair<int, int> temp in bCheckins)
                         {
                             string month = months[temp.Key - 1];
-                            dataWithMonths.Add(new KeyValuePair<string, int>(month, temp.Value));
+                            bCheckinsWithMonths.Add(new KeyValuePair<string, int>(month, temp.Value));
                         }
-                        checkinChart.DataContext = dataWithMonths;
+                        checkinChart.DataContext = bCheckinsWithMonths;
                     }
                     catch (NpgsqlException ex)
                     {
@@ -88,7 +89,6 @@ namespace Lucky13_Milestone2
                         hour = DateTime.Now.Hour, minute = DateTime.Now.Minute, second = DateTime.Now.Second };
 
                     cmd.Connection = connection;
-
                     cmd.CommandText = "INSERT INTO checkin (business_id, year, month, day, hour, minute, second) VALUES('" +
                          te.bid + "', " + te.year + ", " + te.month + ", " + te.day + ", " + te.hour + ", " + te.minute + ", " + te.second + " )";
 

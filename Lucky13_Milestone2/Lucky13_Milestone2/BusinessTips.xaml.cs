@@ -94,21 +94,16 @@ namespace Lucky13_Milestone2
 
         private void loadFriends()
         {
+            List<UserTips> tips = new List<UserTips>();
             friendDataGrid.Items.Clear();
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
                 connection.Open();
                 using (var cmd = new NpgsqlCommand())
                 {
-
                     cmd.Connection = connection;
 
-                    //cmd.CommandText = "SELECT tip.tipdate, tip.tip_text, users.name FROM business, tip, users, (SELECT DISTINCT friends.friend_id FROM friends " +
-                    //    "WHERE friends.user_id = '" + currentUser.userID + "') as fri WHERE fri.friend_id = users.user_id " +
-                    //    "AND business.business_id = tip.business_id AND users.user_id = tip.user_id AND tip.business_id = '" + this.selectedBusiness.bid +
-                    //    "' ORDER BY tip.tipdate desc;";
-
-                    cmd.CommandText = "SELECT tip.tip_text, users.name FROM business, tip, users, (SELECT DISTINCT friends.friend_id FROM friends " +
+                    cmd.CommandText = "SELECT tip.tip_text, users.name, tip.year, tip.month, tip.day, tip.hour, tip.minute, tip.second FROM business, tip, users, (SELECT DISTINCT friends.friend_id FROM friends " +
                         "WHERE friends.user_id = '" + currentUser.userID + "') as fri WHERE fri.friend_id = users.user_id " +
                         "AND business.business_id = tip.business_id AND users.user_id = tip.user_id AND tip.business_id = '" + this.selectedBusiness.bid +
                         "' ;"; // ORDER BY tip.tipdate desc;";
@@ -117,7 +112,21 @@ namespace Lucky13_Milestone2
                     {
                         while (reader.Read())
                         {
-                            friendDataGrid.Items.Add(new UserTips { user_name = reader.GetString(2), /*date = reader.GetDateTime(0).ToString(),*/ tipText = reader.GetString(1) });
+                            //friendDataGrid.Items.Add(new UserTips { user_name = reader.GetString(2), /*date = reader.GetDateTime(0).ToString(),*/ tipText = reader.GetString(1) });
+
+                            DateTime dat = convertToDate(reader.GetInt32(3), reader.GetInt32(4), reader.GetInt32(5), reader.GetInt32(6), reader.GetInt32(7), reader.GetInt32(8));
+                            var data = new UserTips()
+                            {
+                                date = dat,
+                                user_name = reader.GetString(2),
+                                tipText = reader.GetString(1)
+                            };
+                            tips.Add(data);
+                        }
+                        tips.Sort((x, y) => y.date.CompareTo(x.date));
+                        foreach (var tip in tips)
+                        {
+                            friendDataGrid.Items.Add(tip);
                         }
                     }
                 }

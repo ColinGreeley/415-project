@@ -254,6 +254,12 @@ namespace Lucky13_Milestone2
             return totals;           
         }
 
+        private DateTime convertToDate(int y, int m, int d, int hr, int min, int sec)
+        {
+            string date = y.ToString() + "-" + m.ToString() + "-" + d.ToString() + " " + hr.ToString() + ":" + min.ToString() + ":" + sec.ToString();
+            return Convert.ToDateTime(date);
+        }
+
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             clearUserData();
@@ -280,16 +286,12 @@ namespace Lucky13_Milestone2
                                 fansTextBox.Text = reader.GetInt32(2).ToString();
                                 funnyTxt.Text = reader.GetInt32(3).ToString();
                                 usefulTxt.Text = reader.GetInt32(4).ToString();
-
                                 curUser.name = reader.GetString(5);
                                 nameTextBox.Text = curUser.name;
-
                                 tipCountTxt.Text = reader.GetInt32(6).ToString();
 
                                 curUser.userID = reader.GetString(7);
-
                                 yelpSinceTxt.Text = reader.GetString(8);
-
                                 totalTipLikesTxt.Text = reader.GetInt32(9).ToString();
 
                                 //if (reader.GetDouble(9) != 0.0 && reader.GetDouble(10) != 0.0)
@@ -314,22 +316,20 @@ namespace Lucky13_Milestone2
                                 friendsDataGrid.Items.Add(new Friend { friend_id = id, friend_name = nme, friend_stars = stars, yelping_since = since, friend_total_likes = totLik });
                             }
                         }
-                        /*
-                        StringBuilder command = new StringBuilder();
-                        command.Append("(SELECT tip.user_id, users.name, business.name, business.city, tip.tip_text, tip.year, tip.month, tip.day, tip.hour, tip.minute, tip.second FROM users, business, tip, (SELECT distinct user_id " +
-                                "FROM users, (SELECT DISTINCT friend_id FROM friends WHERE user_id = '" + listBox.SelectedItem.ToString() + "') as a WHERE a.friend_id = users.user_id) as b " +
-                                "WHERE b.user_id = users.user_id and business.business_id = tip.business_id and tip.user_id = b.user_id ) as ti");
-
-                        cmd.CommandText = "SELECT name, name, city, tip_text, year, month, day, hour, minute, second FROM " + command.ToString() +
-                            " WHERE year IN( SELECT MAX(year) FROM " + command.ToString() + " GROUP BY user_id ) ORDER BY user_id desc";
-
+                        cmd.CommandText = "SELECT * FROM (SELECT tip.user_id, users.name, business.name, business.city, tip.tip_text, tip.year, " +
+                            "tip.month, tip.day, tip.hour, tip.minute, tip.second FROM users, business, tip, (SELECT distinct user_id FROM users, " +
+                            "(SELECT DISTINCT friend_id FROM friends WHERE user_id = '" + listBox.SelectedItem.ToString() + "') as a " +
+                            "WHERE a.friend_id = users.user_id) as b WHERE b.user_id = users.user_id and business.business_id = tip.business_id " +
+                            "and tip.user_id = b.user_id) as ti ORDER BY year DESC, month DESC, day DESC, hour DESC, minute DESC, second DESC LIMIT 25";
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                friendsTipsDataGrid.Items.Add(new Tip { user_name = reader.GetString(0), /*name = reader.GetString(1),*/ /*city = reader.GetString(2), tipText = reader.GetString(3), tipDate = reader.GetDateTime(4).ToString() });
+                                DateTime date = convertToDate(reader.GetInt32(5), reader.GetInt32(6), reader.GetInt32(7), reader.GetInt32(8), reader.GetInt32(9), reader.GetInt32(10));
+                                friendsTipsDataGrid.Items.Add(new Tip { user_name = reader.GetString(1), business_name = reader.GetString(2), 
+                                    city = reader.GetString(3), tipText = reader.GetString(4), tipDate = date.ToString()});
                             }
-                        }*/
+                        }
                     }
                     connection.Close();
                 }
@@ -836,7 +836,11 @@ namespace Lucky13_Milestone2
                         {
                             while (reader.Read())
                             {
-                                businessGrid.Items.Add(new Business() { bid = reader.GetString(0), name = reader.GetString(1), city = reader.GetString(3), state = reader.GetString(4), zip = reader.GetString(5), address = reader.GetString(2), star = reader.GetDouble(8), totalCheckins = reader.GetInt32(9), numTips = reader.GetInt32(11) });
+                                string bid = reader.GetString(0);
+                                int numTips = reader.GetInt32(9);
+                                if (numTips < 1)
+                                    numTips = getNumTips(bid);
+                                businessGrid.Items.Add(new Business() { bid = bid, name = reader.GetString(1), city = reader.GetString(3), state = reader.GetString(4), zip = reader.GetString(5), address = reader.GetString(2), star = reader.GetDouble(8), totalCheckins = reader.GetInt32(11), numTips = numTips });
                             }
                         }
                         comm.Close();
@@ -852,6 +856,71 @@ namespace Lucky13_Milestone2
                 if (sortBy == " ")
                     sortByDistance();
             }
+        }
+
+        private void insertNumTips(string bid, int count)
+        {
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "UPDATE business SET numtips = " + count + " WHERE business_id = '" + bid + "';";
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        Console.WriteLine(ex.Message.ToString());
+                        MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
+        }
+
+        private int getNumTips(string bid)
+        {
+            int total = 0;
+
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "SELECT COUNT(tip_text) FROM tip WHERE business_id = '" + bid + "'";
+                    try
+                    {
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                            total = reader.GetInt32(0);
+
+                    }
+                    catch (NpgsqlException ex)
+                    {
+
+                        Console.WriteLine(ex.Message.ToString());
+                        MessageBox.Show("SQL Error - " + ex.Message.ToString());
+
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
+            if(total > 0)
+                insertNumTips(bid, total);
+
+            return total;
         }
 
         private StringBuilder updateCostAttributes()
