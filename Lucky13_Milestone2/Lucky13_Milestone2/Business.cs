@@ -20,6 +20,8 @@ namespace Lucky13_Milestone2
         public int numTips { get; set; }
         public int totalCheckins { get; set; }
 
+        public double lat { get; set; }
+        public double lon { get; set; }
 
     }
 
@@ -60,6 +62,8 @@ namespace Lucky13_Milestone2
     {
         public string userID { get; set; }
         public string name { get; set; }
+        public double latitude { get; set; }
+        public double longitude { get; set; }
     }
 
     public class Hours

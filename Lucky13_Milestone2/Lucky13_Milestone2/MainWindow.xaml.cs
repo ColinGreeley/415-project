@@ -251,7 +251,7 @@ namespace Lucky13_Milestone2
                 }
                 connection.Close();
             }
-            return totals;           
+            return totals;
         }
 
         private DateTime convertToDate(int y, int m, int d, int hr, int min, int sec)
@@ -326,8 +326,14 @@ namespace Lucky13_Milestone2
                             while (reader.Read())
                             {
                                 DateTime date = convertToDate(reader.GetInt32(5), reader.GetInt32(6), reader.GetInt32(7), reader.GetInt32(8), reader.GetInt32(9), reader.GetInt32(10));
-                                friendsTipsDataGrid.Items.Add(new Tip { user_name = reader.GetString(1), business_name = reader.GetString(2), 
-                                    city = reader.GetString(3), tipText = reader.GetString(4), tipDate = date.ToString()});
+                                friendsTipsDataGrid.Items.Add(new Tip
+                                {
+                                    user_name = reader.GetString(1),
+                                    business_name = reader.GetString(2),
+                                    city = reader.GetString(3),
+                                    tipText = reader.GetString(4),
+                                    tipDate = date.ToString()
+                                });
                             }
                         }
                     }
@@ -346,17 +352,12 @@ namespace Lucky13_Milestone2
         {
             latTxt.IsReadOnly = true;
             longTxt.IsReadOnly = true;
-            //using (var connection = new NpgsqlConnection(buildConnectionString()))
-            //{
-            //    connection.Open();
-            //    using (var cmd = new NpgsqlCommand())
-            //    {
-            //        cmd.Connection = connection;
-            //        cmd.CommandText = "UPDATE yelpuser SET userlat = '" + Convert.ToDouble(latTxt.Text) + "', userlong = '" + Convert.ToDouble(longTxt.Text) + "' WHERE user_id = '" + listBox.SelectedItem.ToString() + "' ;";
-            //        cmd.ExecuteNonQuery();
-            //    }
-            //    connection.Close();
-            //}
+
+            if (latTxt.Text != "" && longTxt.Text != "")
+            {
+                curUser.latitude = Convert.ToDouble(latTxt.Text);
+                curUser.longitude = Convert.ToDouble(longTxt.Text);
+            }
         }
 
         private void nameTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -536,45 +537,45 @@ namespace Lucky13_Milestone2
             categorySelectedListBox.Items.Remove(categorySelectedListBox.SelectedItem);
         }
 
-        private void calDistance(Business bis)
+        private List<Business> calDistance(Business bis)
         {
             List<Business> listBusinesses = new List<Business>();
-            //using (var comm = new NpgsqlConnection(buildConnectionString()))
-            //{
-            //    comm.Open();
-            //    using (var cmd = new NpgsqlCommand())
-            //    {
-            //        cmd.Connection = comm;
+            if (curUser.latitude != 0.0 && curUser.longitude != 0.0) // if user latitude exists
+            {
+                using (var comm = new NpgsqlConnection(buildConnectionString()))
+                {
+                    comm.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = comm;
 
-            //        StringBuilder buisLoc = new StringBuilder();
-            //        buisLoc.Append("(SELECT lat, long FROM business " +
-            //            "WHERE state ='" + StateList.SelectedItem.ToString() + "' and city ='" + CityList.SelectedItem.ToString() + "' " +
-            //            "and zipcode = '" + ZipList.SelectedItem.ToString() + "' and business.business_id = '" + bis.bid + "' ) as busi");
-            //        StringBuilder userLoc = new StringBuilder();
-            //        userLoc.Append("(SELECT userlat, userlong FROM yelpuser WHERE user_id = '" + curUser.userID + "' ) as userCoor");
+                        string buisLoc = "(SELECT latitude, longitude FROM business " +
+                            "WHERE state ='" + StateList.SelectedItem.ToString() + "' and city ='" + CityList.SelectedItem.ToString() + "' " +
+                            "and zipcode = '" + ZipList.SelectedItem.ToString() + "' and business.business_id = '" + bis.bid + "' ) as busi";
 
-            //        StringBuilder dist = new StringBuilder();
+                        string dis = "(SELECT 2 * 3961 * asin(sqrt((sin(radians((" + curUser.latitude + " - LOC1.latitude) / 2))) ^ 2 " +
+                            "+ cos(radians(LOC1.latitude)) * cos(radians(" + curUser.latitude + ")) * " +
+                            "(sin(radians((" + curUser.longitude + " - LOC1.longitude) / 2))) ^ 2)) as DISTANCE FROM (SELECT latitude, longitude FROM " +
+                            buisLoc.ToString() + ") as LOC1) as dis";
 
-            //        dist.Append("(SELECT 2 * 3961 * asin(sqrt((sin(radians((LOC2.userlat - LOC1.lat) / 2))) ^ 2 + cos(radians(LOC1.lat)) * cos(radians(LOC2.userlat)) * (sin(radians((LOC2.userlong - LOC1.long) / 2))) ^ 2)) as DISTANCE " +
-            //            "FROM (SELECT lat, long FROM " + buisLoc.ToString() + ") as LOC1, (SELECT userlat, userlong FROM " + userLoc.ToString() + ") as LOC2) as dis ");
+                        cmd.CommandText = "SELECT dis.* FROM " + dis;
 
-
-            //        cmd.CommandText = "SELECT dis.* FROM " + dist.ToString();
-
-            //        using (var reader = cmd.ExecuteReader())
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                int i = businessGrid.Items.IndexOf(bis);
-            //                businessGrid.Items.Remove(bis);
-            //                bis.distance = Math.Round(reader.GetDouble(0), 2);
-            //                listBusinesses.Add(bis);
-            //                businessGrid.Items.Insert(i, bis);
-            //            }
-            //        }
-            //        comm.Close();
-            //    }
-            //}
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int i = businessGrid.Items.IndexOf(bis);
+                                if (i != -1) 
+                                    businessGrid.Items.Remove(bis);
+                                bis.distance = Math.Round(reader.GetDouble(0), 2);
+                                listBusinesses.Add(bis);
+                            }
+                        }
+                        comm.Close();
+                    }
+                }
+            }
+            return listBusinesses;
         }
 
         private void sortByDistance()
@@ -586,7 +587,7 @@ namespace Lucky13_Milestone2
                 listBusinesses.Add(businessGrid.Items.GetItemAt(i) as Business);
             }
 
-            listBusinesses = listBusinesses.OrderBy(item => item.distance).ToList();
+            listBusinesses = listBusinesses.OrderByDescending(item => item.distance).ToList();
             businessGrid.Items.Clear();
             foreach (var obj in listBusinesses)
             {
@@ -597,8 +598,7 @@ namespace Lucky13_Milestone2
 
         private void searchBusinessesButton_Click(object sender, RoutedEventArgs e)
         {
-            StringBuilder cmd = new StringBuilder(" ");
-            updateAttributes();
+            updateBusinessGridWithAttributes();
         }
 
         private void insertCategoriesAttribute(Business B)  // inserts categories into selected business category box
@@ -607,41 +607,7 @@ namespace Lucky13_Milestone2
             selectedBusinessDetailsListBox.Items.Clear();
             using (var comm = new NpgsqlConnection(buildConnectionString()))
             {
-
-                //comm.Open();
-                //using (var cmd = new NpgsqlCommand())
-                //{
-
-                //cmd.Connection = comm;
-                /*if (StateList.SelectedItem != null)
-                {
-                    cmdstr += " WHERE state = '" + StateList.SelectedItem.ToString() + "'";
-                }
-                if (CityList.SelectedItem != null)
-                {
-                    cmdstr += " AND city = '" + CityList.SelectedItem.ToString() + "'";
-                }
-                if (ZipList.SelectedItem != null)
-                {
-                    cmdstr += " AND zipcode = '" + ZipList.SelectedItem.ToString() + "'";
-                }
-                cmd.CommandText = "Select Distinct category from categories where business_id IN( " + cmdstr + ")";
-                try
-                {
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        categorylistBox.Items.Add(reader.GetString(0));                    //Buisness_Grif.Items.Add(new Buisness() { name = reader.GetString(0), state = reader.GetString(1), city = reader.GetString(2) });
-
-                }
-                catch (NpgsqlException ex)
-                {
-                    Console.WriteLine(ex.Message.ToString());
-                    System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
-                }
-                finally
-                {
-                    comm.Close();
-                }*/
+                List<string> cat = new List<string>();
                 comm.Open();
                 using (var cmd = new NpgsqlCommand())
                 {
@@ -651,9 +617,9 @@ namespace Lucky13_Milestone2
                     selectedBusinessDetailsListBox.Items.Add("Categories");
                     using (var reader = cmd.ExecuteReader())
                     {
-
                         while (reader.Read())
                         {
+                            cat.Add(reader.GetString(1));
                             selectedBusinessDetailsListBox.Items.Add("\t" + reader.GetString(1));
                         }
                     }
@@ -714,7 +680,7 @@ namespace Lucky13_Milestone2
                         if (!hoursExist)
                             hoursBusTextBlock.Text = "Today (" + today.ToString() + "):   Closed";
 
-                        
+
                     }
 
                 }
@@ -738,8 +704,7 @@ namespace Lucky13_Milestone2
 
         private void sortResultsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            StringBuilder cmd = new StringBuilder(" ");
-            updateAttributes();
+            updateBusinessGridWithAttributes();
         }
 
         private void showCheckinsButton_Click(object sender, RoutedEventArgs e)
@@ -751,26 +716,24 @@ namespace Lucky13_Milestone2
             }
         }
 
-
-        private void updateBusinessGridWithAttributes(StringBuilder temp)
+        private string sortingBy()
         {
-            selectedBusinessDetailsListBox.Items.Clear();
-            string sortBy = "ORDER BY name ASC";
-            if (sortResultsList.SelectedIndex > -1)
+            string sortBy = " ORDER BY name ASC";
+            if (sortResultsList.SelectedIndex > -1) // if sorting selection changed in drop-down menu
             {
                 switch (sortResultsList.SelectedItem.ToString())
                 {
                     case "Name":
-                        sortBy = "ORDER BY name ASC";
+                        sortBy = " ORDER BY name ASC";
                         break;
                     case "Highest rated":
-                        sortBy = "ORDER BY stars DESC";
+                        sortBy = " ORDER BY stars DESC";
                         break;
                     case "Most number of tips":
-                        sortBy = "ORDER BY numtips DESC";
+                        sortBy = " ORDER BY numtips DESC";
                         break;
                     case "Most checkins":
-                        sortBy = "ORDER BY numcheckins DESC";
+                        sortBy = " ORDER BY numcheckins DESC";
                         break;
                     case "Nearest":
                         sortBy = " ";
@@ -779,86 +742,189 @@ namespace Lucky13_Milestone2
                         break;
                 }
             }
+            return sortBy;
+        }
+        private string getAttributes_Price()
+        {
+            string cmdstr = "";
+            if (oneMoneyBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsPriceRange2' AND attribute='1')";
+
+            else if (twoMoneyBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsPriceRange2' AND attribute='2')";
+
+            else if (threeMoneyBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsPriceRange2' AND attribute='3')";
+
+            else if (fourMoneyBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsPriceRange2' AND attribute='4')";
+
+            return cmdstr;
+        }
+
+        private string getAttributes_Main()
+        {
+            string cmdstr = "";
+            if (acceptsCardBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key = 'BusinessAcceptsCreditCards' AND attribute = 'True')";
+
+            if (takesReservBox.IsChecked == true)
+                cmdstr += "AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsReservations' AND attribute='True')";
+
+            if (wheelchairBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='WheelchairAccessible' AND attribute='True')";
+
+            if (outdoorSeatingBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='OutdoorSeating' AND attribute='True')";
+
+            if (kidsBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='GoodForKids' AND attribute='True')";
+
+            if (groupsBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsGoodForGroups' AND attribute='True')";
+
+            if (deliveryBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsDelivery' AND attribute='True')";
+
+            if (takeOutBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='WiFi' AND attribute='free')";
+
+            if (bikeParkingBox.IsChecked == true)
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='BikeParking' AND attribute='True')";
+
+            return cmdstr;
+        }
+
+        private string getAttributes_Meal()
+        {
+            string cmdstr = "";
+
+            if (breakfastBox.IsChecked == true)
+                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='breakfast' AND attribute='True')";
+
+            if (brunchBox.IsChecked == true)
+                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='brunch' AND attribute='True')";
+
+            if (lunchBox.IsChecked == true)
+                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='lunch' AND attribute='True')";
+
+            if (dinnerBox.IsChecked == true)
+                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='dinner' AND attribute='True')";
+
+            if (dessertBox.IsChecked == true)
+                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='dessert' AND attribute='True')";
+
+            if (lateNightBox.IsChecked == true)
+                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='latenight' AND attribute='True')";
+
+            return cmdstr;
+        }
+
+        private string getAttributes()
+        {
+            string cmdstr = "";
+            cmdstr += getAttributes_Price();
+            cmdstr += getAttributes_Main();
+            cmdstr += getAttributes_Meal();
+
+            return cmdstr;
+        }
+
+        private string getCommandStr()
+        {
+            String cmdstr = "";
+            if (categorySelectedListBox.Items.Count > 0) // if 1+ categories selected
+            {
+                cmdstr = "SELECT DISTINCT * FROM business where business_id IN (SELECT business_ID FROM categories WHERE category IN (";
+
+                for (int i = 0; i < categorySelectedListBox.Items.Count; i++)
+                {
+                    cmdstr += "'" + categorySelectedListBox.Items[i] + "'";
+                    if (categorySelectedListBox.Items.Count - 1 > i) // if multiple categories selected
+                        cmdstr += ", ";
+                }
+                cmdstr += ")) AND";
+            }
+
+            else                                                // if no categories selected
+                cmdstr = "SELECT DISTINCT * FROM business WHERE ";
+
+            cmdstr += " state = '" + StateList.SelectedItem.ToString() + "'";
+            cmdstr += " AND city = '" + CityList.SelectedItem.ToString() + "'";
+            cmdstr += " AND zipcode = '" + ZipList.SelectedItem.ToString() + "'";
+
+            cmdstr += getAttributes(); // sees if any attributes are selected
+            cmdstr += sortingBy();  // sort by name, most tips, most checkins, distance, Highest rated
+
+            return cmdstr;
+        }
+
+
+        private void updateBusinessGridWithAttributes()
+        {
+            selectedBusinessDetailsListBox.Items.Clear();
 
             if (CityList.SelectedIndex > -1 && StateList.SelectedIndex > -1 && ZipList.SelectedIndex > -1)
             {
                 businessGrid.Items.Clear();
-                using (var comm = new NpgsqlConnection(buildConnectionString()))
+
+                using (var connection = new NpgsqlConnection(buildConnectionString()))
                 {
-                    comm.Open();
+                    connection.Open();
                     using (var cmd = new NpgsqlCommand())
                     {
-                        StringBuilder command = new StringBuilder();
-                        StringBuilder commandEnd = new StringBuilder();
-                        cmd.Connection = comm;
-                        if (categorySelectedListBox.Items.Count > 0)
-                        {
-                            command.Append(",  (SELECT DISTINCT business_id as bID ");
+                        cmd.Connection = connection;
+                        cmd.CommandText = getCommandStr();
 
-                            command.Append(temp);
-                            if (temp.ToString().ElementAt(temp.ToString().Length - 1) == ')')
-                            {
-                                command.Append(" AND");
-                            }
-                            else
-                            {
-                                command.Append(" FROM business WHERE");
-                            }
-                            command.Append(" business.business_id IN (SELECT business_id FROM categories WHERE category = '" + categorySelectedListBox.Items[0].ToString().Trim() + "') ");
-                            for (int i = 1; i < categorySelectedListBox.Items.Count; i++)
-                            {
-                                command.Append("AND business.business_id IN (SELECT business_id FROM categories WHERE category = '" + categorySelectedListBox.Items[i].ToString().Trim() + "') ");
-                            }
-                            command.Append(") bus ");
-                            commandEnd.Append("and bus.bID = business.business_id ");
-                        }
-                        else
+                        try
                         {
-                            if (temp.ToString() != " ") // if attributes exist
-                            {
-                                command.Append(",  (SELECT DISTINCT business_id as bID ");
-                                command.Append(temp);
-                                command.Append(") bus ");
-                                commandEnd.Append("and bus.bID = business.business_id ");
-                            }
-                            else
-                            {
-                                command.Append(" ");
-                                commandEnd.Append(" ");
-                            }
-                        }
-
-                        cmd.CommandText = "SELECT * FROM business " + command.ToString() +
-                            "WHERE state ='" + StateList.SelectedItem.ToString() + "' and city ='" + CityList.SelectedItem.ToString() + "' " +
-                            "and zipcode = '" + ZipList.SelectedItem.ToString() + "' " + commandEnd.ToString() + sortBy;
-
-                        using (var reader = cmd.ExecuteReader())
-                        {
+                            var reader = cmd.ExecuteReader();
                             while (reader.Read())
                             {
-                                string bid = reader.GetString(0);
                                 int numTips = reader.GetInt32(9);
-                                if (numTips < 1)
-                                    numTips = getNumTips(bid);
-                                businessGrid.Items.Add(new Business() { bid = bid, name = reader.GetString(1), city = reader.GetString(3), state = reader.GetString(4), zip = reader.GetString(5), address = reader.GetString(2), star = reader.GetDouble(8), totalCheckins = reader.GetInt32(11), numTips = numTips });
+                                Business b = new Business()
+                                {
+                                    bid = reader.GetString(0),
+                                    name = reader.GetString(1),
+                                    address = reader.GetString(2),
+                                    city = reader.GetString(3),
+                                    state = reader.GetString(4),
+                                    zip = reader.GetString(5),
+                                    lat = reader.GetDouble(6),
+                                    lon = reader.GetDouble(7),
+                                    star = reader.GetDouble(8),
+                                    totalCheckins = reader.GetInt32(11),
+                                    numTips = numTips
+                                };
+                                List<Business> listBusinesses = calDistance(b);
+
+                                if (b.numTips < 1)
+                                    b.numTips = getNumTips(b.bid);
+
+                                businessGrid.Items.Add(b);
                             }
                         }
-                        comm.Close();
-                        command.Clear();
+                        catch (NpgsqlException ex)
+                        {
+                            Console.WriteLine(ex.Message.ToString());
+                            MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                        }
+                        finally
+                        {
+                            connection.Close();
+                        }
                     }
                 }
-                for (int i = 0; i < businessGrid.Items.Count; i++)
-                {
-                    calDistance(businessGrid.Items.GetItemAt(i) as Business);
-                }
+
                 numOfBusinesses.Content = "# of businesses: " + businessGrid.Items.Count.ToString();
 
-                if (sortBy == " ")
-                    sortByDistance();
+                if (sortResultsList.SelectedIndex != -1)
+                    if (sortResultsList.SelectedItem.ToString() == "Nearest")
+                        sortByDistance();
             }
         }
 
-        private void insertNumTips(string bid, int count)
+        private void insertNumTips(string bid, int count) // inserts updated tip count for business in db
         {
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -885,7 +951,7 @@ namespace Lucky13_Milestone2
 
         }
 
-        private int getNumTips(string bid)
+        private int getNumTips(string bid)  // counts number of tips for business and updates db value
         {
             int total = 0;
 
@@ -917,273 +983,112 @@ namespace Lucky13_Milestone2
                 }
             }
 
-            if(total > 0)
+            if (total > 0)
                 insertNumTips(bid, total);
 
             return total;
         }
 
-        private StringBuilder updateCostAttributes()
-        {
-            StringBuilder command = new StringBuilder();
-            if (whatCostAttributesSelected.Count > 0)
-            {
-                command.Append(" business.business_id IN (SELECT business_id FROM attributes WHERE attr_name = 'RestaurantsPriceRange2' AND attr_value = '" + whatCostAttributesSelected.First().Value + "' ");
-                for (int i = 1; i < whatCostAttributesSelected.Count; i++)
-                {
-                    command.Append("OR attr_value = '" + whatCostAttributesSelected.Values.ToList()[i] + "' ");
-                }
-                command.Append(")");
-            }
-            else
-                command.Append("");
-            return command;
-        }
-
-        private StringBuilder updateOthAttributes()
-        {
-            StringBuilder command = new StringBuilder();
-            if (whatCostAttributesSelected.Count > 0)
-            {
-                command.Append(" business.business_id IN (SELECT business_id FROM attributes WHERE attribute_key = 'RestaurantsPriceRange2' AND attribute = '" + whatCostAttributesSelected.First().Value + "' ");
-                for (int i = 1; i < whatCostAttributesSelected.Count; i++)
-                {
-                    command.Append("OR attribute = '" + whatCostAttributesSelected.Values.ToList()[i] + "' ");
-                }
-                command.Append(")");
-            }
-            else
-                command.Append("");
-            return command;
-        }
-
-        private void updateAttributes()
-        {
-            StringBuilder command = new StringBuilder();
-            if (whatCostAttributesSelected.Count > 0) // cost exists in dictionary
-            {
-                command.Append("FROM business WHERE");
-                command.Append(updateCostAttributes());
-            }
-
-            if (whatCostAttributesSelected.Count > 0 && whatOtherAttributesSelected.Count > 0) // both exist
-            {
-                command.Append("AND ");
-                command.Append(updateOthAttributes());
-            }
-
-            if (whatOtherAttributesSelected.Count > 0 && whatCostAttributesSelected.Count <= 0) // only oth exists
-            {
-                command.Append("FROM business WHERE");
-                command.Append(updateOthAttributes());
-            }
-
-            if (whatOtherAttributesSelected.Count <= 0 && whatCostAttributesSelected.Count <= 0) // only neither contain attributes
-            {
-                command.Append(" ");
-            }
-
-            updateBusinessGridWithAttributes(command);
-        }
-
-        private void storeWhichOtherAttributes(string nme, bool isChecked)
-        {
-            if (whatOtherAttributesSelected.Contains(nme) && isChecked == false) // if box has been unchecked, removes from checked attributes list
-                whatOtherAttributesSelected.Remove(nme);
-            else if (!whatOtherAttributesSelected.Contains(nme) && isChecked == true) // if box has been checked, adds to checked attributes list
-                whatOtherAttributesSelected.Add(nme);
-            updateAttributes();
-        }
-
-        private void storeWhichCostAttributes(string nme, bool isChecked, string valu)
-        {
-            if (whatCostAttributesSelected.ContainsKey(nme) && isChecked == false) // if box has been unchecked, removes from checked attributes list
-                whatCostAttributesSelected.Remove(nme);
-            else if (!whatCostAttributesSelected.ContainsKey(nme) && isChecked == true) // if box has been checked, adds to checked attributes list
-                whatCostAttributesSelected.Add(nme, valu);
-            updateAttributes();
-        }
-
         private void oneMoneyBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (oneMoneyBox.IsChecked == true)
-                check = true;
-
-            storeWhichCostAttributes("oneMoneyBox", check, "1");
+            updateBusinessGridWithAttributes();
         }
 
         private void twoMoneyBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (twoMoneyBox.IsChecked == true)
-                check = true;
-
-            storeWhichCostAttributes("twoMoneyBox", check, "2");
+            updateBusinessGridWithAttributes();
         }
 
         private void threeMoneyBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (threeMoneyBox.IsChecked == true)
-                check = true;
-
-            storeWhichCostAttributes("threeMoneyBox", check, "3");
+            updateBusinessGridWithAttributes();
         }
 
         private void fourMoneyBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (fourMoneyBox.IsChecked == true)
-                check = true;
-
-            storeWhichCostAttributes("fourMoneyBox", check, "4");
+            updateBusinessGridWithAttributes();
         }
 
 
 
         private void acceptsCardBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (acceptsCardBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("BusinessAcceptsCreditCards", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void takesReservBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (takesReservBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("RestaurantsReservations", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void wheelchairBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (wheelchairBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("WheelchairAccessible", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void outdoorSeatingBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (outdoorSeatingBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("OutdoorSeating", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void kidsBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (kidsBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("GoodForKids", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void groupsBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (groupsBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("RestaurantsGoodForGroups", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void deliveryBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (deliveryBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("RestaurantsDelivery", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void takeOutBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (takeOutBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("RestaurantsTakeOut", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void wifiBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (wifiBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("WiFi", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void bikeParkingBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (bikeParkingBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("BikeParking", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void breakfastBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (breakfastBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("breakfast", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void lunchBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (brunchBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("brunch", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void brunchBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (brunchBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("lunch", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void dinnerBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (dinnerBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("dinner", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void dessertBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (dessertBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("desert", check);
+            updateBusinessGridWithAttributes();
         }
 
         private void lateNightBox_Click(object sender, RoutedEventArgs e)
         {
-            bool check = false;
-            if (lateNightBox.IsChecked == true)
-                check = true;
-
-            storeWhichOtherAttributes("latenight", check);
+            updateBusinessGridWithAttributes();
         }
     }
 }
