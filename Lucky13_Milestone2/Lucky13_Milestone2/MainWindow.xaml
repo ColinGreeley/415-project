@@ -10,13 +10,13 @@
         <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="568" VerticalAlignment="Top" Width="1181" Margin="10,10,0,0">
             <TabItem Header="User Information">
                 <Grid Background="#FFE5E5E5">
-                    <GroupBox x:Name="setCurrentUserGroupBox" Header="Set Current User" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" VerticalAlignment="Top" Width="235"/>
+                    <GroupBox x:Name="setCurrentUserGroupBox" Header="Set Current User" HorizontalAlignment="Left" Height="290" Margin="10,10,0,0" VerticalAlignment="Top" Width="235"/>
                     <TextBox x:Name="inputUserTextBox" HorizontalAlignment="Left" Height="22" Margin="20,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="145" TextChanged="inputUserTextBox_TextChanged"/>
-                    <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="194" Margin="20,62,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="listBox_SelectionChanged"/>
-                    <GroupBox x:Name="groupBox1" Header="Friends" HorizontalAlignment="Left" Height="259" Margin="7,263,0,0" VerticalAlignment="Top" Width="514">
+                    <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="227" Margin="20,62,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="listBox_SelectionChanged"/>
+                    <GroupBox x:Name="groupBox1" Header="Friends" HorizontalAlignment="Left" Height="217" Margin="7,305,0,0" VerticalAlignment="Top" Width="514">
                         <DataGrid x:Name="friendsDataGrid" HorizontalAlignment="Left" Height="228" Margin="6,4,0,0" VerticalAlignment="Top" Width="488"/>
                     </GroupBox>
-                    <GroupBox x:Name="groupBox" Header="User Information" HorizontalAlignment="Left" Height="256" Margin="252,10,0,0" VerticalAlignment="Top" Width="269">
+                    <GroupBox x:Name="groupBox" Header="User Information" HorizontalAlignment="Left" Height="290" Margin="252,10,0,0" VerticalAlignment="Top" Width="269">
                         <Label x:Name="label1" Content="Fans:" HorizontalAlignment="Left" Height="30" Margin="131,24,0,0" VerticalAlignment="Top" Width="41"/>
                     </GroupBox>
                     <TextBox x:Name="nameTextBox" HorizontalAlignment="Left" Height="22" Margin="313,29,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="186" IsReadOnly="True" TextChanged="nameTextBox_TextChanged"/>
@@ -44,6 +44,7 @@
                     <GroupBox x:Name="groupBox2" Header="Latest tips of my friends?" HorizontalAlignment="Left" Height="512" Margin="533,10,0,0" VerticalAlignment="Top" Width="632">
                         <DataGrid x:Name="friendsTipsDataGrid" HorizontalAlignment="Left" Height="475" Margin="12,10,0,0" VerticalAlignment="Top" Width="599"/>
                     </GroupBox>
+                    <Button x:Name="friendRecommendationsButton" Content="View Friend Recommendations" HorizontalAlignment="Left" Height="24" Margin="284,0,0,251" VerticalAlignment="Bottom" Width="190" Click="friendRecommendationsButton_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Business Search">

@@ -64,3 +64,5 @@ C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Mi
 C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\ICSharpCode.AvalonEdit.dll
 C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\ITElite.Projects.WPF.Controls.AvalonEditExtend.dll
 C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\obj\Debug\FriendRecommendations.g.cs
+C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\obj\Debug\FriendRecommendations.baml

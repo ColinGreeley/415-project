@@ -148,7 +148,7 @@ namespace Lucky13_Milestone2
 
                     cmd.CommandText = "SELECT * FROM (SELECT DISTINCT business.name, SUM(review.stars)/COUNT(review.stars) AS average_rating, COUNT(review.stars) AS reviews " +
                         "FROM business, review, (SELECT DISTINCT review.user_id, review.business_id, review.stars, review.useful FROM review, " +
-                        "(SELECT review.* FROM users, review WHERE review.user_id = users.user_id AND users.user_id LIKE '" + currentUser.userID + "' AND review.stars > + " + minStars + ") " +
+                        "(SELECT review.* FROM users, review WHERE review.user_id = users.user_id AND users.user_id LIKE '" + currentUser.userID + "' AND review.stars >" + minStars + ") " +
                         "AS user_reviewed_business WHERE review.business_id = user_reviewed_business.business_id AND review.stars > " + minStars + ") AS users_who_have_reviewed_the_same_business " +
                         "WHERE review.user_id = users_who_have_reviewed_the_same_business.user_id AND business.business_id = review.business_id " +
                         "AND review.business_id != users_who_have_reviewed_the_same_business.business_id GROUP BY business.name) AS recommended_business " +
@@ -175,8 +175,8 @@ namespace Lucky13_Milestone2
                 }
             }
         }
-
-        private DateTime convertToDate(int y, int m, int d, int hr, int min, int sec)
+        // int y, int m, int d, int hr, int min, int sec
+        private DateTime convertToDate(int d, int m, int y, int hr, int min, int sec)
         {
             string date = y.ToString() + "-" + m.ToString() + "-" + d.ToString() + " " + hr.ToString() + ":" + min.ToString() + ":" + sec.ToString();
             return Convert.ToDateTime(date);
@@ -211,8 +211,7 @@ namespace Lucky13_Milestone2
                                 text = reader.GetString(7),
                                 date = dat
                             };
-                            //reviewGrid.Add(data);
-                            // tipGrid.Items.Add(data);
+                            
                             reviews.Add(data);
                         }
                         reviews.Sort((x, y) => y.date.CompareTo(x.date));

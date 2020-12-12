@@ -33,6 +33,7 @@ namespace Lucky13_Milestone2
         public string yelping_since { get; set; }
         public string friend_stars { get; set; }
         public int friend_total_likes { get; set; }
+        public int friend_count { get; set; }
     }
 
     public class Tip

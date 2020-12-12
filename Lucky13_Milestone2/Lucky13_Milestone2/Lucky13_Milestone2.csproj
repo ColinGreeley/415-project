@@ -113,6 +113,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="FriendRecommendations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -130,6 +134,9 @@
     </Compile>
     <Compile Include="Checkins.xaml.cs">
       <DependentUpon>Checkins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FriendRecommendations.xaml.cs">
+      <DependentUpon>FriendRecommendations.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

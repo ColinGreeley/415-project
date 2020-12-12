@@ -31,6 +31,7 @@ namespace Lucky13_Milestone2
             addColums2Grid();
             addStates();
             addSortResultsList();
+            friendRecommendationsButton.IsEnabled = false;
         }
 
         private string buildConnectionString()
@@ -167,6 +168,8 @@ namespace Lucky13_Milestone2
 
         private void inputUserTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (listBox.SelectedIndex == -1 || inputUserTextBox.Text == "")
+                friendRecommendationsButton.IsEnabled = false;
             listBox.Items.Clear();
             clearUserData();
             friendsDataGrid.Items.Clear();
@@ -256,6 +259,8 @@ namespace Lucky13_Milestone2
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if(listBox.SelectedIndex != -1)
+                friendRecommendationsButton.IsEnabled = true;
             clearUserData();
             friendsDataGrid.Items.Clear();
             friendsTipsDataGrid.Items.Clear();
@@ -1075,6 +1080,12 @@ namespace Lucky13_Milestone2
         private void lateNightBox_Click(object sender, RoutedEventArgs e)
         {
             updateBusinessGridWithAttributes();
+        }
+
+        private void friendRecommendationsButton_Click(object sender, RoutedEventArgs e)
+        {
+            FriendRecommendations freindRec = new FriendRecommendations(curUser);
+            freindRec.Show();
         }
     }
 }

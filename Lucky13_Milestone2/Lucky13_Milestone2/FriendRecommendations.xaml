@@ -1,0 +1,18 @@
+﻿<Window x:Class="Lucky13_Milestone2.FriendRecommendations"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lucky13_Milestone2"
+        mc:Ignorable="d"
+        Title="FriendRecommendations" Height="450" Width="800">
+    <Grid>
+        <GroupBox x:Name="groupBox" Header="Business Recommendations" HorizontalAlignment="Left" Height="373" Margin="10,41,0,0" VerticalAlignment="Top" Width="770">
+            <DataGrid x:Name="recommendationsDataGrid" HorizontalAlignment="Left" Height="324" Margin="9,10,0,0" VerticalAlignment="Top" Width="736"/>
+        </GroupBox>
+        <Label x:Name="UsersName" Content="User's Name" HorizontalAlignment="Left" Margin="18,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="busName" HorizontalAlignment="Left" Height="26" Margin="120,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="498" IsReadOnly="True"/>
+        <Button x:Name="addFriendButton" Content="Add Selected Friend" HorizontalAlignment="Left" Height="26" Margin="647,10,0,0" VerticalAlignment="Top" Width="133" Click="addFriendButton_Click"/>
+
+    </Grid>
+</Window>
