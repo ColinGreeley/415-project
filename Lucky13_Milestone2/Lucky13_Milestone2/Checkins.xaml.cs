@@ -85,7 +85,7 @@ namespace Lucky13_Milestone2
                 connection.Open();
                 using (var cmd = new NpgsqlCommand())
                 {
-                    var te = new checkin() { bid = busID, year = DateTime.Now.Year, month = DateTime.Now.Month, day = DateTime.Now.Day, 
+                    var te = new Review() { bid = busID, year = DateTime.Now.Year, month = DateTime.Now.Month, day = DateTime.Now.Day, 
                         hour = DateTime.Now.Hour, minute = DateTime.Now.Minute, second = DateTime.Now.Second };
 
                     cmd.Connection = connection;

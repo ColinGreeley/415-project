@@ -26,11 +26,10 @@
                     <Label x:Name="label2" Content="Name:" HorizontalAlignment="Left" Height="25" Margin="270,26,0,0" VerticalAlignment="Top" Width="72"/>
                     <TextBox x:Name="yelpSinceTxt" HorizontalAlignment="Left" Height="22" Margin="359,79,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="140" IsReadOnly="True"/>
                     <Label x:Name="label3" Content="Yelping Since:" HorizontalAlignment="Left" Height="37" Margin="270,76,0,0" VerticalAlignment="Top" Width="188"/>
-                    <Label x:Name="label4" Content="Votes:      Funny:      Cool:       Useful:" HorizontalAlignment="Left" Height="28" Margin="282,95,0,0" VerticalAlignment="Top" Width="212"/>
-                    <TextBox x:Name="votesTxt" HorizontalAlignment="Left" Height="22" Margin="288,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
-                    <TextBox x:Name="funnyTxt" HorizontalAlignment="Left" Height="22" Margin="342,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
-                    <TextBox x:Name="coolTxt" HorizontalAlignment="Left" Height="22" Margin="394,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
-                    <TextBox x:Name="usefulTxt" HorizontalAlignment="Left" Height="22" Margin="446,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
+                    <Label x:Name="label4" Content="      Funny:      Cool:       Useful:" HorizontalAlignment="Left" Height="28" Margin="282,95,0,0" VerticalAlignment="Top" Width="212"/>
+                    <TextBox x:Name="funnyTxt" HorizontalAlignment="Left" Height="22" Margin="310,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
+                    <TextBox x:Name="coolTxt" HorizontalAlignment="Left" Height="22" Margin="362,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
+                    <TextBox x:Name="usefulTxt" HorizontalAlignment="Left" Height="22" Margin="414,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28" RenderTransformOrigin="-0.397,4.421" IsReadOnly="True"/>
                     <Label x:Name="label5" Content="Tip Count:" HorizontalAlignment="Left" Height="38" Margin="274,141,0,0" VerticalAlignment="Top" Width="63"/>
                     <TextBox x:Name="tipCountTxt" HorizontalAlignment="Left" Height="22" Margin="363,146,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="111" IsReadOnly="True"/>
                     <Label x:Name="label5_Copy" Content="Total Tip Likes:" HorizontalAlignment="Left" Height="38" Margin="273,165,0,0" VerticalAlignment="Top" Width="108"/>
@@ -70,7 +69,7 @@
                     </GroupBox>
                     <TextBlock x:Name="addresseBusTextBlock" HorizontalAlignment="Left" Height="36" Margin="275,416,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="485"/>
                     <TextBlock x:Name="hoursBusTextBlock" HorizontalAlignment="Left" Height="41" Margin="275,446,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="451"/>
-                    <Button x:Name="showCheckinsButton" Content="Show Checkins" HorizontalAlignment="Left" Height="32" Margin="752,395,0,0" VerticalAlignment="Top" Width="118" Click="showCheckinsButton_Click"/>
+                    <Button x:Name="showReviewsButton" Content="Show Reviews" HorizontalAlignment="Left" Height="32" Margin="752,395,0,0" VerticalAlignment="Top" Width="118" Click="showReviewsButton_Click"/>
                     <Button x:Name="showTipsButton" Content="Show Tips" HorizontalAlignment="Left" Height="32" Margin="752,457,0,0" VerticalAlignment="Top" Width="118" Click="showTipsButton_Click"/>
                     <GroupBox x:Name="groupBox7" Header="Filter by Price:" HorizontalAlignment="Left" Height="74" Margin="870,22,0,0" VerticalAlignment="Top" Width="295" />
                     <CheckBox x:Name="twoMoneyBox" Content="CheckBox" HorizontalAlignment="Left" Height="17" Margin="898,69,0,0" VerticalAlignment="Top" Width="16" Click="twoMoneyBox_Click"/>

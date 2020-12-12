@@ -21,11 +21,7 @@ namespace Lucky13_Milestone2
     /// </summary>
     public partial class MainWindow : Window
     {
-
         curUserSelected curUser = new curUserSelected();
-        Dictionary<string, string> whatCostAttributesSelected = new Dictionary<string, string>();
-
-        List<string> whatOtherAttributesSelected = new List<string>();
 
         public MainWindow()
         {
@@ -147,17 +143,17 @@ namespace Lucky13_Milestone2
             col7.Width = 55;
             businessGrid.Columns.Add(col7);
 
-            DataGridTextColumn col8 = new DataGridTextColumn();
-            col8.Binding = new Binding("totalCheckins");
-            col8.Header = "Total Checkins";
-            col8.Width = 60;
-            businessGrid.Columns.Add(col8);
+            //DataGridTextColumn col8 = new DataGridTextColumn();
+            //col8.Binding = new Binding("totalCheckins");
+            //col8.Header = "Total Checkins";
+            //col8.Width = 60;
+            //businessGrid.Columns.Add(col8);
 
-            DataGridTextColumn col9 = new DataGridTextColumn();
-            col9.Binding = new Binding("bid");
-            col9.Header = "";
-            col9.Width = 0;
-            businessGrid.Columns.Add(col9);
+            //DataGridTextColumn col9 = new DataGridTextColumn();
+            //col9.Binding = new Binding("bid");
+            //col9.Header = "";
+            //col9.Width = 0;
+            //businessGrid.Columns.Add(col9);
         }
 
         private void addSortResultsList()
@@ -165,10 +161,9 @@ namespace Lucky13_Milestone2
             sortResultsList.Items.Add("Name");
             sortResultsList.Items.Add("Highest rated");
             sortResultsList.Items.Add("Most number of tips");
-            sortResultsList.Items.Add("Most checkins");
+            //sortResultsList.Items.Add("Most checkins");
             sortResultsList.Items.Add("Nearest");
         }
-
 
         private void inputUserTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -214,7 +209,6 @@ namespace Lucky13_Milestone2
             starsTextBox.Text = "";
             fansTextBox.Text = "";
             yelpSinceTxt.Text = "";
-            votesTxt.Text = "";
             funnyTxt.Text = "";
             coolTxt.Text = "";
             usefulTxt.Text = "";
@@ -293,12 +287,6 @@ namespace Lucky13_Milestone2
                                 curUser.userID = reader.GetString(7);
                                 yelpSinceTxt.Text = reader.GetString(8);
                                 totalTipLikesTxt.Text = reader.GetInt32(9).ToString();
-
-                                //if (reader.GetDouble(9) != 0.0 && reader.GetDouble(10) != 0.0)
-                                //{
-                                //    latTxt.Text = reader.GetDouble(9).ToString();
-                                //    longTxt.Text = reader.GetDouble(10).ToString();
-                                //}
                             }
                         }
                         cmd.CommandText = "SELECT distinct * FROM users, (SELECT DISTINCT friends.friend_id FROM friends " +
@@ -707,12 +695,12 @@ namespace Lucky13_Milestone2
             updateBusinessGridWithAttributes();
         }
 
-        private void showCheckinsButton_Click(object sender, RoutedEventArgs e)
+        private void showReviewsButton_Click(object sender, RoutedEventArgs e)
         {
             if (businessGrid.SelectedIndex > -1)
             {
-                Checkins Checkins = new Checkins(((Business)businessGrid.SelectedItem).bid);
-                Checkins.Show();
+                BusinessReviews reviews = new BusinessReviews((Business)businessGrid.SelectedItem, curUser);
+                reviews.Show();
             }
         }
 
@@ -732,9 +720,9 @@ namespace Lucky13_Milestone2
                     case "Most number of tips":
                         sortBy = " ORDER BY numtips DESC";
                         break;
-                    case "Most checkins":
-                        sortBy = " ORDER BY numcheckins DESC";
-                        break;
+                    //case "Most checkins":
+                    //    sortBy = " ORDER BY numcheckins DESC";
+                    //    break;
                     case "Nearest":
                         sortBy = " ";
                         break;
@@ -769,7 +757,7 @@ namespace Lucky13_Milestone2
                 cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key = 'BusinessAcceptsCreditCards' AND attribute = 'True')";
 
             if (takesReservBox.IsChecked == true)
-                cmdstr += "AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsReservations' AND attribute='True')";
+                cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='RestaurantsReservations' AND attribute='True')";
 
             if (wheelchairBox.IsChecked == true)
                 cmdstr += " AND business_id IN (SELECT business_id FROM attributes WHERE attribute_key='WheelchairAccessible' AND attribute='True')";
@@ -893,7 +881,7 @@ namespace Lucky13_Milestone2
                                     lat = reader.GetDouble(6),
                                     lon = reader.GetDouble(7),
                                     star = reader.GetDouble(8),
-                                    totalCheckins = reader.GetInt32(11),
+                                    //totalCheckins = reader.GetInt32(11),
                                     numTips = numTips
                                 };
                                 List<Business> listBusinesses = calDistance(b);
@@ -1008,8 +996,6 @@ namespace Lucky13_Milestone2
         {
             updateBusinessGridWithAttributes();
         }
-
-
 
         private void acceptsCardBox_Click(object sender, RoutedEventArgs e)
         {

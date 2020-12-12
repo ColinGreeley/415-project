@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Npgsql;
 
 namespace Lucky13_Milestone2
@@ -207,7 +199,7 @@ namespace Lucky13_Milestone2
             }
             else if(tipTextBox.Text.Length < 1)
             {
-                MessageBox.Show("Must insert review in 'Insert Tip' text box first!");
+                MessageBox.Show("Must insert tip in 'Insert Tip' text box first!");
             }
             else
             {

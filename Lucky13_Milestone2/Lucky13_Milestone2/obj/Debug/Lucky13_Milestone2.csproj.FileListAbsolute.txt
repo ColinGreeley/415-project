@@ -59,3 +59,8 @@ C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Mi
 C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\obj\Debug\Lucky13_Milestone2.pdb
 C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
 C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.xml
+C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\obj\Debug\BusinessReviews.g.cs
+C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\obj\Debug\BusinessReviews.baml
+C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\ICSharpCode.AvalonEdit.dll
+C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\ITElite.Projects.WPF.Controls.AvalonEditExtend.dll
+C:\Users\rossm\Documents\BigData\group\415-project\Lucky13_Milestone2\Lucky13_Milestone2\bin\Debug\System.Windows.Interactivity.dll

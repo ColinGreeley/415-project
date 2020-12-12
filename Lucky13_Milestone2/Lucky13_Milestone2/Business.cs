@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Npgsql;
 
 namespace Lucky13_Milestone2
 {
@@ -80,16 +81,52 @@ namespace Lucky13_Milestone2
         }
     }
 
-    public class checkin
+    public class Review
     {
+        public string rid { get; set; }
+        public string uid { get; set; }
         public string bid { get; set; }
+        public double stars { get; set; }
+        public int useful { get; set; }
+        public int funny { get; set; }
+        public int cool { get; set; }
+        public string text { get; set; }
         public int year { get; set; }
         public int month { get; set; }
         public int day { get; set; }
-        //public string time { get; set; }
         public int hour { get; set; }
         public int minute { get; set; }
         public int second { get; set; }
+        public DateTime date { get; set; }
+    }
+
+    public class BusinessRecommendations
+    {
+        public string name { get; set; }
+        public double average_rating { get; set; }
+        public int reviews { get; set; }
+    }
+
+    public class sqlCommands
+    {
+        public sqlCommands()
+        {
+
+        }
+        private string buildConnectionString()
+        {
+            return "Host = localhost; Username = postgres; Database = 415Project; password = 605027";
+        }
+
+        public void executeQuery(string cmd)
+        {
+
+        }
+
+        public void executeNonQuery(string cmd)
+        {
+
+        }
     }
 
 }
