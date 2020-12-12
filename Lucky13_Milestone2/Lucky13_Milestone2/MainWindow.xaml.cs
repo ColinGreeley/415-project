@@ -702,10 +702,14 @@ namespace Lucky13_Milestone2
 
         private void showReviewsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (businessGrid.SelectedIndex > -1)
+            if (businessGrid.SelectedIndex > -1 && curUser.userID != "")
             {
                 BusinessReviews reviews = new BusinessReviews((Business)businessGrid.SelectedItem, curUser);
                 reviews.Show();
+            }
+            else if(businessGrid.SelectedIndex > -1 && curUser.userID == "")
+            {
+                MessageBox.Show("Must Select User");
             }
         }
 

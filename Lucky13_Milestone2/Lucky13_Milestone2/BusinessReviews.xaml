@@ -9,8 +9,8 @@
     <Grid>
         <Label x:Name="BusinessName" Content="Business Name" HorizontalAlignment="Left" Margin="64,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="busName" HorizontalAlignment="Left" Height="26" Margin="166,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="244" IsReadOnly="True"/>
-        <DataGrid x:Name="reviewGrid" Height="167" Margin="65,75,66.667,0" VerticalAlignment="Top" FontSize="14" CanUserResizeRows="False" IsReadOnly="True" SelectionChanged="tipGrid_SelectionChanged"/>
-        <GroupBox x:Name="Business_Reviews" Header="Business Reviews" HorizontalAlignment="Left" Height="210" Margin="50,49,0,0" VerticalAlignment="Top" Width="1039" RenderTransformOrigin="0.5,0.5">
+        <DataGrid x:Name="reviewGrid" Height="215" Margin="65,75,66.667,0" VerticalAlignment="Top" FontSize="14" CanUserResizeRows="False" IsReadOnly="True" SelectionChanged="tipGrid_SelectionChanged"/>
+        <GroupBox x:Name="Business_Reviews" Header="Business Reviews" HorizontalAlignment="Left" Height="259" Margin="50,49,0,0" VerticalAlignment="Top" Width="1039" RenderTransformOrigin="0.5,0.5">
             <GroupBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -20,15 +20,14 @@
                 </TransformGroup>
             </GroupBox.RenderTransform>
         </GroupBox>
-        <GroupBox x:Name="groupBox" Header="Business Recommendations" HorizontalAlignment="Left" Height="210" Margin="48,334,0,0" VerticalAlignment="Top" Width="1039">
-            <DataGrid x:Name="recommendationsDataGrid" HorizontalAlignment="Left" Height="171" Margin="9,10,0,0" VerticalAlignment="Top" Width="691"/>
+        <GroupBox x:Name="groupBox" Header="Business Recommendations" HorizontalAlignment="Left" Height="248" Margin="48,316,0,-0.333" VerticalAlignment="Top" Width="1039">
+            <DataGrid x:Name="recommendationsDataGrid" HorizontalAlignment="Left" Height="208" Margin="9,10,0,0" VerticalAlignment="Top" Width="691"/>
         </GroupBox>
-        <GroupBox x:Name="groupBox10" Header="Minimum Rating" HorizontalAlignment="Left" Height="61" Margin="774,377,0,0" VerticalAlignment="Top" Width="292">
+        <GroupBox x:Name="groupBox10" Header="Minimum Stars" HorizontalAlignment="Left" Height="61" Margin="773,361,0,0" VerticalAlignment="Top" Width="292">
             <ComboBox x:Name="minRatingList" HorizontalAlignment="Left" Height="27" Margin="15,6,0,0" VerticalAlignment="Top" Width="254" SelectionChanged="minRatingList_SelectionChanged"/>
         </GroupBox>
-        <Slider x:Name="slider1" HorizontalAlignment="Left" Height="30" Margin="265,299,0,0" VerticalAlignment="Top" Width="172"/>
-        <GroupBox x:Name="groupBox10_Copy" Header="Minimum # of Reviews" HorizontalAlignment="Left" Height="61" Margin="774,460,0,0" VerticalAlignment="Top" Width="292">
-            <ComboBox x:Name="minRatingList1" HorizontalAlignment="Left" Height="27" Margin="15,6,0,0" VerticalAlignment="Top" Width="254" SelectionChanged="minRatingList_SelectionChanged"/>
+        <GroupBox x:Name="groupBox10_Copy" Header="Limit on Recommendations" HorizontalAlignment="Left" Height="61" Margin="773,444,0,0" VerticalAlignment="Top" Width="292">
+            <ComboBox x:Name="limRecList" HorizontalAlignment="Left" Height="27" Margin="15,6,0,0" VerticalAlignment="Top" Width="254" SelectionChanged="limRecList_SelectionChanged" />
         </GroupBox>
 
     </Grid>

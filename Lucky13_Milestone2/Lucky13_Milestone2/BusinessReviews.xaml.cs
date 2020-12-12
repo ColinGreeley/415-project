@@ -41,12 +41,19 @@ namespace Lucky13_Milestone2
         }
         private void addSortResultsList()
         {
-            minRatingList.Items.Add("0");
             minRatingList.Items.Add("1");
             minRatingList.Items.Add("2");
             minRatingList.Items.Add("3");
             minRatingList.Items.Add("4");
-            minRatingList.Items.Add("5");
+            //minRatingList.Items.Add("5");
+            limRecList.Items.Add("5");
+            limRecList.Items.Add("10");
+            limRecList.Items.Add("15");
+            limRecList.Items.Add("20");
+            //minReviewsList.Items.Add("10");
+            //minReviewsList.Items.Add("20");
+            //minReviewsList.Items.Add("30");
+            //minReviewsList.Items.Add("40");
         }
 
         private void addColums2Grid()
@@ -111,7 +118,7 @@ namespace Lucky13_Milestone2
             DataGridTextColumn col3 = new DataGridTextColumn();
             col3.Binding = new Binding("reviews");
             col3.Header = "Reviews";
-            col3.Width = 664;
+            col3.Width = 335;
             recommendationsDataGrid.Columns.Add(col3);
         }
 
@@ -120,24 +127,44 @@ namespace Lucky13_Milestone2
             busName.Text = this.selectedBusiness.name;
         }
 
-        private double getSortingValues()
+        private int getMinStars()
         {
-            double minStars = Convert.ToDouble(minRatingList.SelectedIndex);
-
-            if (minStars == -1)
-                minStars = 0.0;
-
-            return minStars;
+            List<int> min = new List<int>() { 1, 2, 3, 4 };
+            if (minRatingList.SelectedIndex > -1) // if  selection changed in drop-down menu
+            {
+                return min[minRatingList.SelectedIndex];
+            }
+            return 3;
         }
+
+        private int getLimit()
+        {
+            List<int> limits = new List<int>() { 5, 10, 15, 20 };
+            if (limRecList.SelectedIndex > -1) // if  selection changed in drop-down menu
+            {
+                return limits[limRecList.SelectedIndex];
+            }
+            return 5;
+        }
+
+        //private int getMinReviews()
+        //{
+        //    List<int> min = new List<int>() { 10, 20, 30, 40 };
+        //    if (minRatingList.SelectedIndex > -1) // if  selection changed in drop-down menu
+        //    {
+        //        return min[minRatingList.SelectedIndex];
+        //    }
+        //    return 10;
+        //}
 
         private void loadRecommendations()
         {
             List<BusinessRecommendations> recommendations = new List<BusinessRecommendations>();
             recommendationsDataGrid.Items.Clear();
 
-            double minStars = getSortingValues();
-            int minReviews = 0;
-            string limit = "LIMIT 5";
+            double minStars = getMinStars();
+            //int minReviews = getMinReviews();
+            string limit = "LIMIT " + getLimit();
 
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -145,22 +172,23 @@ namespace Lucky13_Milestone2
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = connection;
-
                     cmd.CommandText = "SELECT * FROM (SELECT DISTINCT business.name, SUM(review.stars)/COUNT(review.stars) AS average_rating, COUNT(review.stars) AS reviews " +
                         "FROM business, review, (SELECT DISTINCT review.user_id, review.business_id, review.stars, review.useful FROM review, " +
                         "(SELECT review.* FROM users, review WHERE review.user_id = users.user_id AND users.user_id LIKE '" + currentUser.userID + "' AND review.stars >" + minStars + ") " +
                         "AS user_reviewed_business WHERE review.business_id = user_reviewed_business.business_id AND review.stars > " + minStars + ") AS users_who_have_reviewed_the_same_business " +
                         "WHERE review.user_id = users_who_have_reviewed_the_same_business.user_id AND business.business_id = review.business_id " +
                         "AND review.business_id != users_who_have_reviewed_the_same_business.business_id GROUP BY business.name) AS recommended_business " +
-                        " WHERE recommended_business.average_rating > " + minStars + " AND recommended_business.reviews > " + minReviews +
+                        " WHERE recommended_business.average_rating > " + minStars + " AND recommended_business.reviews > " + 1 +
                         " ORDER BY recommended_business.average_rating * recommended_business.reviews DESC " + limit;
 
-                    using (var reader = cmd.ExecuteReader())
+                    try
                     {
+                        var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            var data = new BusinessRecommendations() { 
-                            
+                            var data = new BusinessRecommendations()
+                            {
+
                                 name = reader.GetString(0),
                                 average_rating = reader.GetDouble(1),
                                 reviews = reader.GetInt32(2)
@@ -172,10 +200,20 @@ namespace Lucky13_Milestone2
                             recommendationsDataGrid.Items.Add(recommendation);
                         }
                     }
+                    catch (NpgsqlException ex)
+                    {
+                        Console.WriteLine(ex.Message.ToString());
+                        MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+
                 }
             }
         }
-        // int y, int m, int d, int hr, int min, int sec
+        
         private DateTime convertToDate(int d, int m, int y, int hr, int min, int sec)
         {
             string date = y.ToString() + "-" + m.ToString() + "-" + d.ToString() + " " + hr.ToString() + ":" + min.ToString() + ":" + sec.ToString();
@@ -192,7 +230,7 @@ namespace Lucky13_Milestone2
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = connection;
-                    cmd.CommandText = "SELECT * FROM review where user_id='" + currentUser.userID + "' AND business_id='" + selectedBusiness.bid + "'";
+                    cmd.CommandText = "SELECT * FROM review where  business_id='" + selectedBusiness.bid + "' LIMIT 20";
 
                     try
                     {
@@ -234,11 +272,6 @@ namespace Lucky13_Milestone2
             }
         }
 
-        private void tipTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void tipGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -248,5 +281,15 @@ namespace Lucky13_Milestone2
         {
             loadRecommendations();
         }
+
+        private void limRecList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            loadRecommendations();
+        }
+
+        //private void minReviewsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    loadRecommendations();
+        //}
     }
 }
