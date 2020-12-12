@@ -11,8 +11,7 @@
             <DataGrid x:Name="recommendationsDataGrid" HorizontalAlignment="Left" Height="324" Margin="9,10,0,0" VerticalAlignment="Top" Width="736"/>
         </GroupBox>
         <Label x:Name="UsersName" Content="User's Name" HorizontalAlignment="Left" Margin="18,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="busName" HorizontalAlignment="Left" Height="26" Margin="120,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="498" IsReadOnly="True"/>
-        <Button x:Name="addFriendButton" Content="Add Selected Friend" HorizontalAlignment="Left" Height="26" Margin="647,10,0,0" VerticalAlignment="Top" Width="133" Click="addFriendButton_Click"/>
+        <TextBox x:Name="userName" HorizontalAlignment="Left" Height="26" Margin="120,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="498" IsReadOnly="True"/>
 
     </Grid>
 </Window>

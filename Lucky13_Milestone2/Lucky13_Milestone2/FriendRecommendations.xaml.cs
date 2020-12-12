@@ -26,6 +26,7 @@ namespace Lucky13_Milestone2
         {
             InitializeComponent();
             currentUser = user;
+            userName.Text = currentUser.name;
             addColums2Grid();
             getFriendRecommendations();
         }
@@ -45,7 +46,7 @@ namespace Lucky13_Milestone2
 
             DataGridTextColumn col2 = new DataGridTextColumn();
             col2.Binding = new Binding("friend_count");
-            col2.Header = "# of Friends";
+            col2.Header = "Mutual Friends";
             col2.Width = 428;
             recommendationsDataGrid.Columns.Add(col2);
         }
@@ -92,6 +93,11 @@ namespace Lucky13_Milestone2
 
         private void addFriendButton_Click(object sender, RoutedEventArgs e)
         {
+            int sel = recommendationsDataGrid.SelectedIndex;
+            if(sel > -1)
+            {
+                string id = recommendations[sel].friend_id;
+            }
             //int index = recommendationsDataGrid.SelectedIndex;
             //Friend selected = recommendations[index];
             //using (var connection = new NpgsqlConnection(buildConnectionString()))

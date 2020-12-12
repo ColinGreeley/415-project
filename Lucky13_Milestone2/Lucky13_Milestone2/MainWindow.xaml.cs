@@ -580,7 +580,7 @@ namespace Lucky13_Milestone2
                 listBusinesses.Add(businessGrid.Items.GetItemAt(i) as Business);
             }
 
-            listBusinesses = listBusinesses.OrderByDescending(item => item.distance).ToList();
+            listBusinesses = listBusinesses.OrderBy(item => item.distance).ToList();
             businessGrid.Items.Clear();
             foreach (var obj in listBusinesses)
             {
@@ -792,37 +792,37 @@ namespace Lucky13_Milestone2
             return cmdstr;
         }
 
-        private string getAttributes_Meal()
-        {
-            string cmdstr = "";
+        //private string getAttributes_Meal()
+        //{
+        //    string cmdstr = "";
 
-            if (breakfastBox.IsChecked == true)
-                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='breakfast' AND attribute='True')";
+        //    if (breakfastBox.IsChecked == true)
+        //        cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='breakfast' AND attribute='True')";
 
-            if (brunchBox.IsChecked == true)
-                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='brunch' AND attribute='True')";
+        //    if (brunchBox.IsChecked == true)
+        //        cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='brunch' AND attribute='True')";
 
-            if (lunchBox.IsChecked == true)
-                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='lunch' AND attribute='True')";
+        //    if (lunchBox.IsChecked == true)
+        //        cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='lunch' AND attribute='True')";
 
-            if (dinnerBox.IsChecked == true)
-                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='dinner' AND attribute='True')";
+        //    if (dinnerBox.IsChecked == true)
+        //        cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='dinner' AND attribute='True')";
 
-            if (dessertBox.IsChecked == true)
-                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='dessert' AND attribute='True')";
+        //    if (dessertBox.IsChecked == true)
+        //        cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='dessert' AND attribute='True')";
 
-            if (lateNightBox.IsChecked == true)
-                cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='latenight' AND attribute='True')";
+        //    if (lateNightBox.IsChecked == true)
+        //        cmdstr += " AND business_id IN ( select business_id from attributes where attribute_key='latenight' AND attribute='True')";
 
-            return cmdstr;
-        }
+        //    return cmdstr;
+        //}
 
         private string getAttributes()
         {
             string cmdstr = "";
             cmdstr += getAttributes_Price();
             cmdstr += getAttributes_Main();
-            cmdstr += getAttributes_Meal();
+            //cmdstr += getAttributes_Meal();
 
             return cmdstr;
         }
